@@ -1,2 +1,2 @@
-# AwareOSUStudent
-Be aware of crimes around the campus area
+# Aware OSU Student
+Be aware of crimes around the campus area.
