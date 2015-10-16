@@ -1,34 +1,25 @@
 <!DOCTYPE html>
-<html>
+<html lang="en-us">
   <head>
-    <meta charset='utf-8'>
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <meta charset="UTF-8">
+    <title>AwareOSU by CailinPitt</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
     <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
-
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-
-    <title>AwareOSU by CailinPitt</title>
   </head>
-
   <body>
-    <header>
-      <div class="inner">
-        <h1>AwareOSU</h1>
-        <h2>Be aware of crimes around the campus area.</h2>
-        <a href="https://github.com/CailinPitt/AwareOSU" class="button"><small>View project on</small> GitHub</a>
-      </div>
-    </header>
+    <section class="page-header">
+      <h1 class="project-name">AwareOSU</h1>
+      <h2 class="project-tagline">Be aware of crimes around the campus area.</h2>
+      <a href="https://github.com/CailinPitt/AwareOSU" class="btn">View on GitHub</a>
+      <a href="https://github.com/CailinPitt/AwareOSU/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/CailinPitt/AwareOSU/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
 
-    <div id="content-wrapper">
-      <div class="inner clearfix">
-        <section id="main-content">
-          <h1>
+    <section class="main-content">
+      <h1>
 <a id="aware-osu" class="anchor" href="#aware-osu" aria-hidden="true"><span class="octicon octicon-link"></span></a>Aware OSU</h1>
 
 <p>Be aware of crimes around the campus area.</p>
@@ -41,16 +32,12 @@
 <h1>
 <a id="features" class="anchor" href="#features" aria-hidden="true"><span class="octicon octicon-link"></span></a>Features</h1>
 
-<ul>
-<li>Program runs once every day (using a CRON job), webscrapes the <a href="http://www.columbuspolice.org/reports/">Columbus Police Department's unofficial web report portal</a>, finds the previous days crimes, and emails the list of crimes to specified users.</li>
-</ul>
+<p>Program runs once every day (using a CRON job), webscrapes the <a href="http://www.columbuspolice.org/reports/">Columbus Police Department's unofficial web report portal</a>, finds the previous days crimes, and emails the list of crimes to specified users.</p>
 
 <h1>
 <a id="great-overview-what-is-the-code-actually-doing" class="anchor" href="#great-overview-what-is-the-code-actually-doing" aria-hidden="true"><span class="octicon octicon-link"></span></a>Great overview. What is the code actually doing?</h1>
 
-<ul>
-<li>This program utilizes three great gems, Mechanize, Nokogiri, and Mail. This program visits the CPD web portal (listed above) using Mechanize, parses the HTML of the search page containing all crimes committed yesterday using Nokogiri, and send the information out in a HTML table using Mail.</li>
-</ul>
+<p>This program utilizes three great gems, Mechanize, Nokogiri, and Mail. This program visits the CPD web portal (listed above) using Mechanize, parses the HTML of the search page containing all crimes committed yesterday using Nokogiri, and send the information out in a HTML table using Mail.</p>
 
 <h1>
 <a id="images" class="anchor" href="#images" aria-hidden="true"><span class="octicon octicon-link"></span></a>Images</h1>
@@ -72,27 +59,15 @@ Email from Aware OSU</p>
 <h1>
 <a id="how-to-sign-up" class="anchor" href="#how-to-sign-up" aria-hidden="true"><span class="octicon octicon-link"></span></a>How to sign up</h1>
 
-<ul>
-<li>Visit the <a href="http://goo.gl/forms/Oy5kZ4xHbX">Aware OSU Google form</a> to sign-up.</li>
-</ul>
-        </section>
+<p>Visit the <a href="http://goo.gl/forms/Oy5kZ4xHbX">Aware OSU Google form</a> to sign-up.</p>
 
-        <aside id="sidebar">
-          <a href="https://github.com/CailinPitt/AwareOSU/zipball/master" class="button">
-            <small>Download</small>
-            .zip file
-          </a>
-          <a href="https://github.com/CailinPitt/AwareOSU/tarball/master" class="button">
-            <small>Download</small>
-            .tar.gz file
-          </a>
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/CailinPitt/AwareOSU">AwareOSU</a> is maintained by <a href="https://github.com/CailinPitt">CailinPitt</a>.</span>
 
-          <p class="repo-owner"><a href="https://github.com/CailinPitt/AwareOSU"></a> is maintained by <a href="https://github.com/CailinPitt">CailinPitt</a>.</p>
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
 
-          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
-        </aside>
-      </div>
-    </div>
+    </section>
 
   
   </body>
