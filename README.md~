@@ -11,7 +11,7 @@ OSU students (well, college students in general) enjoy being safe. Whenever a cr
 * This program utilizes three great gems, Mechanize, Nokogiri, and Mail. This program visits the CPD web portal (listed above) using Mechanize, parses the HTML of the search page containg all crimes committed yesterday using Nokogiri, and send the information out in a HTML table using Mail.
 
 # Images
-![Email from Aware OSU]()
+![Email from Aware OSU](https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/email.PNG)
 
 # Goals
 1. Develop Android App (no current plans for iPhone because it's $100/year to be an iOS developer, poor college student problems)

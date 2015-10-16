@@ -12,6 +12,7 @@ OSU students (well, college students in general) enjoy being safe. Whenever a cr
 
 # Images
 ![Email from Aware OSU](https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/email.PNG)
+Email from Aware OSU
 
 # Goals
 1. Develop Android App (no current plans for iPhone because it's $100/year to be an iOS developer, poor college student problems)
