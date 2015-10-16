@@ -1,3 +1,10 @@
+=begin
+	TODO: Make new GMAIL account for Aware OSU
+	TODO: Make Google form
+	TODO: Do text files for emails
+	TODO: Environment variable for password
+	TODO: Code cleanup (make classes)
+=end
 # Mechanize gets the website and transforms into HTML file.
 require 'mechanize'
 # Nokogiri gets the website data that could be read later on.
@@ -15,8 +22,8 @@ def main
 	page = agent.get "http://www.columbuspolice.org/reports/SearchLocation?loc=zon4"
 
 	search_form = page.form_with :id => "ctl01"
-	search_form.field_with(:name => "ctl00$MainContent$startdate").value = "10/14/2015" #yesterday
-	search_form.field_with(:name => "ctl00$MainContent$enddate").value = "10/14/2015" #yesterday
+	search_form.field_with(:name => "ctl00$MainContent$startdate").value = yesterday
+	search_form.field_with(:name => "ctl00$MainContent$enddate").value = yesterday
 	# Searching for all crimes from yesterday
 
 	button = search_form.button_with(:type => "submit")
@@ -26,10 +33,9 @@ def main
 	# Page containing the information we want to sift through.
 	# Time for Nokogiri
 
-	
 	options = { :address      => "smtp.gmail.com",
             :port                 => 587,
-            :user_name            => '',
+            :user_name            => 'cailinpitt1',
             :password             => '',
             :authentication       => 'plain',
             :enable_starttls_auto => true  }
@@ -45,11 +51,11 @@ def main
 	# We use this span class to figure out if there are crimes for the specified date or not.
 
 	if products.text.to_s.eql? "Your search produced no records."
-		messageBody = "Hi. As of #{Time.now}, there are no crimes listed on the Columbus Police Department's website.\nAs always, you can check for crimes around the campus area yourself by visiting:\nhttp://www.columbuspolice.org/reports/SearchLocation?loc=zon4.\n\n\nBest,\n\nAware OSU Student"
+		messageBody = "Hi. As of #{Time.now}, there are no crimes listed on the Columbus Police Department's website.\nAs always, you can check for crimes around the campus area yourself by visiting:\nhttp://www.columbuspolice.org/reports/SearchLocation?loc=zon4.\n\n\nBest,\n\nAware OSU"
 		Mail.deliver do
 		       to 'cailinpitt1@gmail.com'
 		     from 'cailinpitt1@gmail.com'
-		  subject 'Aware OSU Student Digest - No Crimes'
+		  subject 'Aware OSU Digest - No Crimes'
 		     body messageBody
 		end
 	else
@@ -58,20 +64,48 @@ def main
 
 		crimeTable = resultPage.css("table[class='mGrid']")
 		crimeInfo = crimeTable.css('td')
-		puts "0. #{crimeInfo.length}"
-		puts "1. #{crimeInfo[0].text}"
-		puts "2. #{crimeInfo[1].text}"
-	end
+		crimeReportNumbers = crimeTable.css('tr')
+		crimeNum = crimeInfo.length
+		crimeHTML = '<table style="width:80%;text-align: left;"><tbody><tr><th>CRNumber</th><th>Description</th><th>Location</th><th>Link</th></tr>'
+		
+	i = 0
+	j = 0;
+	linkIndex = 1;
 
-	
-=begin
-	Mail.deliver do
-	       to 'cailinpitt1@gmail.com'
-	     from 'pitt.35@osu.edu'
-	  subject 'Testing Aware OSU Student'
-	     body 'hey!'
+		while i < crimeNum do
+			report = '';
+			for j in 11...crimeReportNumbers[linkIndex]["onclick"].length - 1
+				char = '' + crimeReportNumbers[linkIndex]["onclick"][j]
+				report += char
+			end
+
+			puts report
+			crimeHTML = crimeHTML + '<tr>'
+			crimeHTML = crimeHTML + '<td>' + crimeInfo[i].text + '</td>'
+			crimeHTML = crimeHTML + '<td>' + crimeInfo[i + 1].text + '</td>'
+			crimeHTML = crimeHTML + '<td>' + crimeInfo[i + 4].text + '</td>'
+			crimeHTML = crimeHTML + '<td>' + 'http://www.columbuspolice.org/reports/PublicReport?caseID=' + report + '</td>'
+			crimeHTML = crimeHTML + '</tr>'
+			i += 5
+			linkIndex += 1
+			# Put information in table
+		end
+
+		Mail.deliver do
+		       to 'cailinpitt1@gmail.com'
+		     from 'pitt.35@osu.edu'
+		  subject "Aware OSU Digest - #{yesterday}"
+
+			html_part do
+				 content_type 'text/html; charset=UTF-8'
+    		 body "<h1>#{crimeNum/5} Crimes for #{yesterday}</h1>" + crimeHTML + "</tbody></table><p>Best,</p><p>Aware OSU</p>"
+			end
+
+			text_part do
+				body "\n\n\nBest,\n\nAwareOSU"
+			end
+		end
 	end
-=end
 end
 
 main

@@ -1,4 +1,4 @@
-# Aware OSU Student
+# Aware OSU
 -------------------
 Be aware of crimes around the campus area.
 
@@ -15,4 +15,8 @@ OSU students (well, college students in general) enjoy being safe. Whenever a cr
 1. Develop Android App (no current plans for iPhone because it's $100/year to be an iOS developer, poor college student problems)
 2. Make this more automatic (I currently have to manually add emails to send information to)
 3. Get Raspberry Pi and run program on there (my computer isn't always on at 9:00 AM everyday for CRON job to run)
-4. Setup text message integration. I imagine this program texting you the number of crimes that have occurred from the previous day.
+4. Setup text message integration. I imagine this program texting you the number of crimes that have occurred from the previous day
+5. Set up environment variables so I don't have to keep removing my password everytime I push
+
+# How to sign up
+* Go to *Insert Google form*
