@@ -1,20 +1,15 @@
 =begin
 	TODO: Code cleanup (make classes)
-	Created by Cailin Pitt on 10/15/2015
 =end
-
 # Mechanize gets the website and transforms into HTML file.
 require 'mechanize'
 # Nokogiri gets the website data that could be read later on.
 require 'nokogiri'
 # Mail sends out information
 require 'mail'
-
 def main
 	yesterday = (Time.now - (3600 * 24)).strftime("%m/%d/%Y")
-	# Get yesterday's date
 	agent = Mechanize.new
-	# Initialize new Mechanize agent
 
 	# Chose Safari because I like Macs
 	agent.user_agent_alias = "Mac Safari" 
