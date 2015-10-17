@@ -14,7 +14,7 @@ OSU students (well, college students in general) enjoy being safe. Whenever a cr
 ![Email from Aware OSU](https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/email.PNG)
 Email from Aware OSU
 
-![Looks nice on mobile too](https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/email.PNG)
+![Looks nice on mobile too](https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/IMG_2862.jpg)
 Looks nice on mobile too
 
 # Goals
@@ -28,8 +28,5 @@ Looks nice on mobile too
 * Visit the [Aware OSU Google form](http://goo.gl/forms/Oy5kZ4xHbX) to sign-up.
 
 # Updates
-
-### 10/17/2015
-
-* Apparently Google only lets users send out a max of 100 emails/day, so the awareosu@gmail.com account got suspended. From now on, I will be using a Google Group to mass email everyone who signed up through the Google Form. For future software engineers: this is why we test every aspect of your code
+* 10/17/2015- Apparently Google only lets users send out a max of 100 emails/day, so the awareosu@gmail.com account got suspended for a day. From now on, I will be using a Google Group to mass email everyone who signed up through the Google Form. For future software engineers: this is why we test every aspect of our code
 ---
