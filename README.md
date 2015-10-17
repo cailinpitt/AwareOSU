@@ -14,7 +14,7 @@ OSU students (well, college students in general) enjoy being safe. Whenever a cr
 ![Email from Aware OSU](https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/email.PNG)
 Email from Aware OSU
 
-![Looks nice on mobile too](https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/IMG_2862.jpg)
+<img src="https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/IMG_2862.jpg" alt="Looks nice on mobile too" style="width: 200px;"/>
 Looks nice on mobile too
 
 # Goals
