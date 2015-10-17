@@ -27,12 +27,12 @@
 <h1>
 <a id="features" class="anchor" href="#features" aria-hidden="true"><span class="octicon octicon-link"></span></a>Features</h1>
 
-<p>Program runs once every day (using a CRON job), webscrapes the <a href="http://www.columbuspolice.org/reports/">Columbus Police Department's unofficial web report portal</a>, finds the previous days crimes, and emails the list of crimes to specified users.</p>
+<p>Program runs once every day (using a CRON job), webscrapes the <a href="http://www.columbuspolice.org/reports/">Columbus Police Department's unofficial web report portal</a>, finds the previous days crimes, and emails the list of crimes to a Google Group of users who signed up for the mailing list.</p>
 
 <h1>
 <a id="great-overview-what-is-the-code-actually-doing" class="anchor" href="#great-overview-what-is-the-code-actually-doing" aria-hidden="true"><span class="octicon octicon-link"></span></a>Great overview. What is the code actually doing?</h1>
 
-<p>This program utilizes three great gems, Mechanize, Nokogiri, and Mail. This program visits the CPD web portal (listed above) using Mechanize, parses the HTML of the search page containing all crimes committed yesterday using Nokogiri, and send the information out in a HTML table using Mail.</p>
+<p>This Ruby program utilizes three great gems, Mechanize, Nokogiri, and Mail. This program visits the CPD web portal (listed above) using Mechanize, parses the HTML of the search page containing all crimes committed yesterday using Nokogiri, and send the information out in a HTML table using Mail.</p>
 
 <h1>
 <a id="images" class="anchor" href="#images" aria-hidden="true"><span class="octicon octicon-link"></span></a>Images</h1>
@@ -47,14 +47,20 @@ Email from Aware OSU</p>
 <li>Develop Android App (no current plans for iPhone because it's $100/year to be an iOS developer, poor college student problems)</li>
 <li>Make this more automatic (I currently have to manually add emails to send information to)</li>
 <li>Get Raspberry Pi and run program on there (my computer isn't always on at 9:00 AM everyday for CRON job to run)</li>
-<li>Possibly setup text message integration. I imagine this program texting you the number of crimes that have occurred from the previous day. I'm on the fence as to whether this is a useful feature</li>
-<li>Create GitHub page to make app more inviting</li>
+<li>Possibly set up text message integration. I imagine this program texting you the number of crimes that have occurred from the previous day. I'm on the fence as to whether this is a useful feature</li>
 </ol>
 
 <h1>
 <a id="how-to-sign-up" class="anchor" href="#how-to-sign-up" aria-hidden="true"><span class="octicon octicon-link"></span></a>How to sign up</h1>
 
 <p>Visit the <a href="http://goo.gl/forms/Oy5kZ4xHbX">Aware OSU Google form</a> to sign-up.</p>
+
+<h1>
+<a id="updates" class="anchor" href="#updates" aria-hidden="true"><span class="octicon octicon-link"></span></a>Updates</h1>
+
+<ul>
+<li>10/17/2015 - Google only allows GMail accounts to send up to 100 individual emails/day, so from now on I will be adding those who sign up for AwareOSU to a Google Group, and the program will email the group.</li>
+</ul>
 
       <footer class="site-footer">
         <span class="site-footer-owner"><a href="https://github.com/CailinPitt/AwareOSU">AwareOSU</a> is maintained by <a href="https://github.com/CailinPitt">CailinPitt</a>.</span>
