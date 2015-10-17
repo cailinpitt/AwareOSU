@@ -28,6 +28,8 @@ Looks nice on mobile too
 * Visit the [Aware OSU Google form](http://goo.gl/forms/Oy5kZ4xHbX) to sign-up.
 
 # Updates
+
 ### 10/17/2015
+
 * Apparently Google only lets users send out a max of 100 emails/day, so the awareosu@gmail.com account got suspended. From now on, I will be using a Google Group to mass email everyone who signed up through the Google Form. For future software engineers: this is why we test every aspect of your code
 ---
