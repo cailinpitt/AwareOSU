@@ -51,18 +51,13 @@ def main
 	products = resultPage.css("span[class='ErrorLabel']")
 	# We use this span class to figure out if there are crimes for the specified date or not.
 
-	emailArray = IO.readlines('../emails.txt')
-	# Email list saved as textfile outside repo, load them into array
-
 	if products.text.to_s.eql? "Your search produced no records."
 		messageBody = "Hi. As of #{Time.now}, there are no crimes listed on the Columbus Police Department's website.\nAs always, you can check for crimes around the campus area yourself by visiting:\nhttp://www.columbuspolice.org/reports/SearchLocation?loc=zon4.\n\n\nBest,\n\nAware OSU"
-		for i in 0...emailArray.size
-			Mail.deliver do
-				     to emailArray[i].delete!("\n")
-				   from 'awareosu@gmail.com'
-				subject 'Aware OSU Digest - No Crimes'
-				   body messageBody
-			end
+		Mail.deliver do
+			     to 'awareosulist@googlegroups.com'
+			   from 'awareosu@gmail.com'
+			subject 'Aware OSU Digest - No Crimes'
+			   body messageBody
 		end
 		# Case where no crimes have occurred yesterday (very rare for this to occur, and most likely due to program running before crimes have been uploaded to CPD web portal
 	else
@@ -99,21 +94,17 @@ def main
 			linkIndex += 1
 			# Put information in table
 		end
-	
-		for i in 0...emailArray.size
-			Mail.deliver do
-				     to emailArray[i].delete!("\n")
-				   from 'awareosu@gmail.com'
-				subject "Aware OSU Digest - #{yesterday}"
+		Mail.deliver do
+			     to 'awareosulist@googlegroups.com'
+			   from 'awareosu@gmail.com'
+			subject "Aware OSU Digest - #{yesterday}"
 
-				html_part do
-					 content_type 'text/html; charset=UTF-8'
-		  		 body "<h1>#{crimeNum/5} Crimes for #{yesterday}</h1>" + crimeHTML + "</tbody></table><p>Best,</p><p>Aware OSU</p>"
-				end
+			html_part do
+				 content_type 'text/html; charset=UTF-8'
+	  		 body "<h1>#{crimeNum/5} Crimes for #{yesterday}</h1>" + crimeHTML + "</tbody></table><p>Best,</p><p>Aware OSU</p>"
 			end
 		end
 		# Send out crime information to everyone on email list.
-
 	end
 end
 

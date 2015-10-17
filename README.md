@@ -5,14 +5,17 @@ Be aware of crimes around the campus area.
 OSU students (well, college students in general) enjoy being safe. Whenever a crime occurs on campus (ex. sexual assault, robbery), OSU sends every student and staff an email briefly explaining the crime. However, OSU doesn't send crime alerts for crimes that occur *around* campus (where many students live). The reality is that we live in a dangerous world, and we want to be aware of what is happening around us.
 
 # Features
-* Program runs once every day (using a CRON job), webscrapes the [Columbus Police Department's unofficial web report portal](http://www.columbuspolice.org/reports/), finds the previous days crimes, and emails the list of crimes to specified users.
+* Program runs once every day (using a CRON job), webscrapes the [Columbus Police Department's unofficial web report portal](http://www.columbuspolice.org/reports/), finds the previous days crimes, and emails the list of crimes to a Google Group of users who signed up for the mailing list.
 
 # Great overview. What is the code actually doing?
-* This program utilizes three great gems, Mechanize, Nokogiri, and Mail. This program visits the CPD web portal (listed above) using Mechanize, parses the HTML of the search page containing all crimes committed yesterday using Nokogiri, and send the information out in a HTML table using Mail.
+* This program utilizes three great gems, Mechanize, Nokogiri, and Mail. This program visits the CPD web portal (listed above) using Mechanize, parses the HTML of the search page containing all crimes committed yesterday using Nokogiri, and sends the information out in a HTML table using Mail.
 
 # Images
 ![Email from Aware OSU](https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/email.PNG)
 Email from Aware OSU
+
+![Looks nice on mobile too](https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/email.PNG)
+Looks nice on mobile too
 
 # Goals
 1. Develop Android App (no current plans for iPhone because it's $100/year to be an iOS developer, poor college student problems)
@@ -24,3 +27,7 @@ Email from Aware OSU
 # How to sign up
 * Visit the [Aware OSU Google form](http://goo.gl/forms/Oy5kZ4xHbX) to sign-up.
 
+# Updates
+### 10/17/2015
+* Apparently Google only lets users send out a max of 100 emails/day, so the awareosu@gmail.com account got suspended. From now on, I will be using a Google Group to mass email everyone who signed up through the Google Form. For future software engineers: this is why we test every aspect of your code
+---
