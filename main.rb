@@ -70,7 +70,8 @@ def main
 		# Get crime information
 
 		crimeNum = crimeInfo.length
-		crimeHTML = '<table style="width:80%;text-align: left;"><tbody><tr><th>CRNumber</th><th>Description</th><th>Location</th><th>Link</th></tr>'
+		crimeHTML = "<h1>#{crimeNum/5} Off-campus crimes for #{yesterday}</h1>"
+		crimeHTML = crimeHTML + '<table style="width:80%;text-align: left;"><tbody><tr><th>CRNumber</th><th>Description</th><th>Location</th><th>Link</th></tr>'
 		# Set up table for information
 		
 	i = 0
@@ -94,6 +95,30 @@ def main
 			linkIndex += 1
 			# Put information in table
 		end
+
+		page = agent.get "http://www.ps.ohio-state.edu/police/daily_log/view.php?date=yesterday"
+		campusPage = Nokogiri::HTML(page.body)
+		crimeTable = campusPage.css("table[width='680']")
+		crimesFromTable = crimeTable.css("td[class='log']")
+		numberOfOSUCrimes = crimesFromTable.length/8
+		# Get number of crimes committed on campus the previous day
+
+		crimeHTML = crimeHTML + "<br><br></tbody></table>"
+		crimeHTML = crimeHTML + "<h1>#{numberOfOSUCrimes} On-campus crimes for #{yesterday}</h1>"
+		crimeHTML = crimeHTML + '<table style="width:80%;text-align: left;"><tbody><tr><th>Report Number</th><th>Incident Type</th><th>Location</th><th>Description</th></tr>'
+		
+		i = 0
+		while i < crimesFromTable.length do
+			crimeHTML = crimeHTML + '<tr>'
+			crimeHTML = crimeHTML + '<td>' + crimesFromTable[i].text + '</td>'
+			crimeHTML = crimeHTML + '<td>' + crimesFromTable[i + 5].text + '</td>'
+			crimeHTML = crimeHTML + '<td>' + crimesFromTable[i + 6].text + '</td>'
+			crimeHTML = crimeHTML + '<td>' + crimesFromTable[i + 7].text + '</td>'
+			crimeHTML = crimeHTML + '</tr>'
+			i += 8
+		end
+		# Retrieve on campus crimes
+
 		Mail.deliver do
 			     to 'awareosulist@googlegroups.com'
 			   from 'awareosu@gmail.com'
@@ -101,7 +126,7 @@ def main
 
 			html_part do
 				 content_type 'text/html; charset=UTF-8'
-	  		 body "<h1>#{crimeNum/5} Crimes for #{yesterday}</h1>" + crimeHTML + "</tbody></table><p>Best,</p><p>Aware OSU</p>"
+	  		 body crimeHTML + "</tbody></table><p>Best,</p><p>Aware OSU</p>"
 			end
 		end
 		# Send out crime information to everyone on email list.
