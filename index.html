@@ -22,17 +22,17 @@
       <h1>
 <a id="background" class="anchor" href="#background" aria-hidden="true"><span class="octicon octicon-link"></span></a>Background</h1>
 
-<p>OSU students (well, college students in general) enjoy being safe. Whenever a crime occurs on campus (ex. sexual assault, robbery), OSU sends every student and staff an email briefly explaining the crime. However, OSU doesn't send crime alerts for crimes that occur <em>around</em> campus (where many students live). The reality is that we live in a dangerous world, and we want to be aware of what is happening around us.</p>
+<p>OSU students (well, college students in general) enjoy being safe. Whenever a crime occurs on campus (ex. sexual assault, robbery), OSU sends every student and staff an email briefly explaining the crime. However, OSU doesn't send crime alerts for all crimes that occur <em>on and around</em> campus (where many students live). The reality is that we live in a dangerous world, and we want to be aware of what is happening around us.</p>
 
 <h1>
 <a id="features" class="anchor" href="#features" aria-hidden="true"><span class="octicon octicon-link"></span></a>Features</h1>
 
-<p>Program runs once every day (using a CRON job), webscrapes the <a href="http://www.columbuspolice.org/reports/">Columbus Police Department's unofficial web report portal</a>, finds the previous days crimes, and emails the list of crimes to a Google Group of users who signed up for the mailing list.</p>
+<p>Program runs once every day (using a CRON job), webscrapes the <a href="http://www.columbuspolice.org/reports/">Columbus Police Department's unofficial web report portal</a> and the <a href="http://www.ps.ohio-state.edu/police/daily_log/view.php?date=yesterday">OSU Police department's daily log system</a>, finds the previous days crimes, and emails the list of crimes to a Google Group of users who signed up for the mailing list.</p>
 
 <h1>
 <a id="great-overview-what-is-the-code-actually-doing" class="anchor" href="#great-overview-what-is-the-code-actually-doing" aria-hidden="true"><span class="octicon octicon-link"></span></a>Great overview. What is the code actually doing?</h1>
 
-<p>This Ruby program utilizes three great gems, Mechanize, Nokogiri, and Mail. This program visits the CPD web portal (listed above) using Mechanize, parses the HTML of the search page containing all crimes committed yesterday using Nokogiri, and send the information out in a HTML table using Mail.</p>
+<p>This Ruby program utilizes three great gems, Mechanize, Nokogiri, and Mail. This program visits the CPD web portal and OSU PD online log system (listed above) using Mechanize, parses the HTML of the search page containing all crimes committed yesterday using Nokogiri, and sends the information out in a HTML table using Mail.</p>
 
 <h1>
 <a id="images" class="anchor" href="#images" aria-hidden="true"><span class="octicon octicon-link"></span></a>Images</h1>
@@ -59,6 +59,7 @@ Email from Aware OSU</p>
 <a id="updates" class="anchor" href="#updates" aria-hidden="true"><span class="octicon octicon-link"></span></a>Updates</h1>
 
 <ul>
+<li>10/22/2015 - Program now searches and retrieves on-campus crimes, in addition to off-campus crimes. </li>
 <li>10/17/2015 - Google only allows GMail accounts to send up to 100 individual emails/day, so from now on I will be adding those who sign up for AwareOSU to a Google Group, and the program will email the group.</li>
 </ul>
 
