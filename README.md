@@ -1,4 +1,4 @@
-# Aware OSU
+# [Aware OSU](cailinpitt.github.io/AwareOSU/)
 Be aware of crimes around the campus area.
 
 # Background
