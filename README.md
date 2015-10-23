@@ -15,9 +15,8 @@ This Ruby program utilizes three great gems, Mechanize, Nokogiri, and Mail. This
 
 Email from Aware OSU
 
-<br>
 
-<img src="https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/IMG_2862.jpg" alt="Mobile" width="375" height="667"/>
+<img src="https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/IMG_2862.jpg" alt="Mobile" width="250" height="445"/>
 
 Looks good on mobile too
 
