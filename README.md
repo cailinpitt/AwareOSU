@@ -11,15 +11,14 @@ Program runs once every day (using a CRON job), webscrapes the [Columbus Police 
 This Ruby program utilizes three great gems, Mechanize, Nokogiri, and Mail. This program visits the CPD web portal and OSU PD online log system (listed above) using Mechanize, parses the HTML of the search page containing all crimes committed yesterday using Nokogiri, and sends the information out in a HTML table using Mail.
 
 # Images
-![Email from Aware OSU](https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/fullEmail.PNG)
 
-Email from Aware OSU
+#### Email from Aware OSU
+![Email from Aware OSU](https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/fullEmail.PNG)
 
 ---
 
+#### Looks good on mobile too
 <img src="https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/IMG_2862.jpg" alt="Mobile" width="250" height="445"/>
-
-Looks good on mobile too
 
 # Goals
 1. Develop Android App (no current plans for iPhone because it's $100/year to be an iOS developer, poor college student problems)
