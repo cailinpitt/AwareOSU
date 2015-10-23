@@ -14,7 +14,7 @@ This Ruby program utilizes three great gems, Mechanize, Nokogiri, and Mail. This
 ![Email from Aware OSU](https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/fullEmail.PNG)
 Email from Aware OSU
 
-<img src="IMG_2862.jpg" alt="Mobile" style="width: 200px;"/>
+<img src="https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/IMG_2862.jpg" alt="Mobile" style="width: 200px;"/>
 
 # Goals
 1. Develop Android App (no current plans for iPhone because it's $100/year to be an iOS developer, poor college student problems)
