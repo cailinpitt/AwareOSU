@@ -20,6 +20,14 @@ This Ruby program utilizes three great gems, Mechanize, Nokogiri, and Mail. This
 #### Looks good on mobile too
 <img src="https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/IMG_2862.jpg" alt="Mobile" width="250" height="445"/>
 
+# Why are some crimes listed multiple times?
+![Sometimes you may see crimes listed multiple times in a digest](https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/repeat.PNG)
+
+This is because some crimes may have multiple people involved, as seen on the Columbus Police Department's web portal:
+![Multiple crimes](https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/repeat1.PNG)
+
+Currently, victim names aren't included in the digest. Even though this is publically accessible information, I'm not sure how comfortable people would feel with names being emailed to the 100+ AwareOSU users.
+
 # Goals
 1. Develop Android App (no current plans for iPhone because it's $100/year to be an iOS developer, poor college student problems)
 2. Make this more automatic (I currently have to manually add emails to send information to)
