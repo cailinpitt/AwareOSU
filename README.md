@@ -24,9 +24,11 @@ This Ruby program utilizes three great gems, Mechanize, Nokogiri, and Mail. This
 ![Raspberry Pi](https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/pi.PNG)
 
 # Why are some crimes listed multiple times?
+For example:
+
 ![Sometimes you may see crimes listed multiple times in a digest](https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/repeat.PNG)
 
-This is because some crimes may have multiple people involved, as seen on the Columbus Police Department's web portal:
+This is because some crimes may have multiple victims, as seen on the Columbus Police Department's web portal:
 ![Multiple crimes](https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/repeat1.PNG)
 
 Currently, victim names aren't included in the digest. Even though this is publically accessible information, I'm not sure how comfortable people would feel with names being emailed to the 100+ AwareOSU users.
