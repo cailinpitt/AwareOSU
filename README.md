@@ -40,7 +40,7 @@ Currently, victim names aren't included in the digest. Even though this is publi
 Visit the [Aware OSU Google form](http://goo.gl/forms/Oy5kZ4xHbX) to sign-up.
 
 # Updates
-* 10/24/2015 - Aware OSU is now running from a Raspberry Pi! What does this mean? Basically, this means that Aware OSU is almost fully automated. The only thing I do now is add emails to the Google Group of people who have suscribed, and the Pi uses a CRON job to run Aware OSU every morning at 9:30.
+* 10/24/2015 - Aware OSU is now running from a Raspberry Pi! What does this mean? Basically, this means that Aware OSU is almost fully automated. The only thing I do now is add emails to the Google Group of people who have suscribed, and the Pi uses a CRON job to run Aware OSU every morning at 9:00.
 
 * 10/22/2015 - Program now searches and retrieves on-campus crimes, in addition to off-campus crimes. 
 
