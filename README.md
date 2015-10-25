@@ -20,8 +20,8 @@ This Ruby program utilizes three great gems, Mechanize, Nokogiri, and Mail. This
 #### Looks good on mobile too
 <img src="https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/IMG_2862.jpg" alt="Mobile" width="250" height="445"/>
 
-#### Say hi to the Raspberry Pi that runs Aware OSU every morning
-![Raspberry Pi](https://github.com/CailinPitt/AwareOSU/blob/master/images/pi.png)
+#### Say hi to the Raspberry Pi that runs Aware OSU every morning!
+![Raspberry Pi](https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/pi.png)
 
 # Why are some crimes listed multiple times?
 For example:
