@@ -11,7 +11,6 @@ Program runs once every day (using a CRON job), webscrapes the [Columbus Police 
 This Ruby program utilizes three great gems, Mechanize, Nokogiri, and Mail. This program visits the CPD web portal and OSU PD online log system (listed above) using Mechanize, parses the HTML of the search page containing all crimes committed yesterday using Nokogiri, and sends the information out in a HTML table using Mail.
 
 # Images
-
 #### Email from Aware OSU
 ![Email from Aware OSU](https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/fullEmail.PNG)
 
@@ -31,7 +30,7 @@ For example:
 This is because some crimes may have multiple victims, as seen on the Columbus Police Department's web portal:
 ![Multiple crimes](https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/repeat1.PNG)
 
-Currently, victim names aren't included in the digest. Even though this is publically accessible information, I'm not sure how comfortable people would feel with names being emailed to the 100+ AwareOSU users.
+Currently, victim names aren't included in the digest. Even though this is publically accessible information, I'm not sure how comfortable people would feel with names being emailed to the 100+ Aware OSU users.
 
 # Goals
 1. Develop Android App (no current plans for iPhone because it's $100/year to be an iOS developer, poor college student problems)
@@ -40,7 +39,7 @@ Currently, victim names aren't included in the digest. Even though this is publi
 Visit the [Aware OSU Google form](http://goo.gl/forms/Oy5kZ4xHbX) to sign-up.
 
 # Updates
-* 10/24/2015 - Aware OSU is now running from a Raspberry Pi! What does this mean? Basically, this means that Aware OSU is almost fully automated. The only thing I do now is add emails to the Google Group of people who have suscribed, and the Pi uses a CRON job to run Aware OSU every morning at 9:00.
+* 10/24/2015 - Aware OSU is now running from a Raspberry Pi! What does this mean? Basically, this means that Aware OSU is almost fully automated. The only thing I do now is add emails to the Google Group of people who have subscribed, and the Pi uses a CRON job to run Aware OSU every morning at 9:00.
 
 * 10/22/2015 - Program now searches and retrieves on-campus crimes, in addition to off-campus crimes. 
 
