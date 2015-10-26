@@ -24,9 +24,6 @@ This Ruby program utilizes three great gems, Mechanize, Nokogiri, and Mail. This
 #### Say hi to the Raspberry Pi that runs Aware OSU every morning!
 ![Raspberry Pi](https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/pi.png)
 
-# Disclaimer
-[Crimes listed on CPD's web portal is not representative of all crime that have occurred](http://www.columbuspolice.org/reports/About).
-
 # Why are some crimes listed multiple times?
 For example:
 
@@ -49,3 +46,6 @@ Visit the [Aware OSU Google form](http://goo.gl/forms/Oy5kZ4xHbX) to sign-up.
 * 10/22/2015 - Program now searches and retrieves on-campus crimes, in addition to off-campus crimes. 
 
 * 10/17/2015 - Apparently Google only lets users send out a max of 100 emails/day, so the awareosu@gmail.com account got suspended for a day. From now on, I will be using a Google Group to mass email everyone who signed up through the Google Form. For future software engineers: this is why we test every aspect of our code.
+
+# Disclaimer
+[Crimes listed on CPD's web portal is not representative of all crimes that have occurred](http://www.columbuspolice.org/reports/About).
