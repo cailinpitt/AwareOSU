@@ -47,5 +47,8 @@ Visit the [Aware OSU Google form](http://goo.gl/forms/Oy5kZ4xHbX) to sign-up.
 
 * 10/17/2015 - Apparently Google only lets users send out a max of 100 emails/day, so the awareosu@gmail.com account got suspended for a day. From now on, I will be using a Google Group to mass email everyone who signed up through the Google Form. For future software engineers: this is why we test every aspect of our code.
 
+# Press
+* [Students for Concealed Carry](http://concealedcampus.org/2015/10/students-for-concealed-carry-applauds-student-led-crime-awareness-initiative/)
+
 # Disclaimer
 [Crimes listed on CPD's web portal is not representative of all crimes that have occurred](http://www.columbuspolice.org/reports/About).
