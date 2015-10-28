@@ -49,6 +49,7 @@ Visit the [Aware OSU Google form](http://goo.gl/forms/Oy5kZ4xHbX) to sign-up.
 
 # Press
 * [Students for Concealed Carry](http://concealedcampus.org/2015/10/students-for-concealed-carry-applauds-student-led-crime-awareness-initiative/)
+* [Lantern TV](https://youtu.be/MAaY5FkLQqI?t=1m51s)
 
 # Disclaimer
 [Crimes listed on CPD's web portal is not representative of all crimes that have occurred](http://www.columbuspolice.org/reports/About).
