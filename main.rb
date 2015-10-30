@@ -1,5 +1,6 @@
 =begin
 	TODO: Code cleanup (make classes)
+	TODO: Improve "no crimes" email, make on-campus crimes independent of off-campus crimes
 	Created by Cailin Pitt on 10/15/2015
 =end
 
@@ -9,12 +10,16 @@ require 'mechanize'
 require 'nokogiri'
 # Mail sends out information
 require 'mail'
+require 'resolv-replace.rb'
 
 def main
 	yesterday = (Time.now - (3600 * 24)).strftime("%m/%d/%Y")
 	# Get yesterday's date
 	agent = Mechanize.new
+	agent.open_timeout = 60
+	agent.read_timeout = 60
 	# Initialize new Mechanize agent
+	# Pi takes a longer time to load web pages, had to increase timeouts in order to avoid socketerrors
 
 	# Chose Safari because I like Macs
 	agent.user_agent_alias = "Mac Safari" 
@@ -34,7 +39,8 @@ def main
 	# Page containing the information we want to sift through.
 	# Time for Nokogiri
 
-	passArray = IO.readlines('../p')
+	passArray = IO.readlines('/home/pi/Documents/p')
+
 	options = { :address      => "smtp.gmail.com",
             :port                 => 587,
             :user_name            => 'awareosu',
