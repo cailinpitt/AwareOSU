@@ -34,16 +34,27 @@ This is because some crimes may have multiple victims, as seen on the Columbus P
 
 Currently, victim names aren't included in the digest. Even though this is publically accessible information, I'm not sure how comfortable people would feel with names being emailed to the 400+ AwareOSU users.
 
+# What does the shell script do?
+My Pi has been having problems staying connected to an ethernet connection. It will say that it has a connection, but in actuality I cannot access the internet. This seems to be a semi-common problem among Pis, and this also causes problems for AwareOSU since it can't access the internet if there isn't a connection. This script resets the ethernet connection every morning one minute before AwareOSU is scheduled to run, ensuring that the Pi has a valid, working internet connection.
+
 # Goals
 1. Develop Android App (no current plans for iPhone because it's $100/year to be an iOS developer, poor college student problems)
 
 # How to sign up
 Visit the [AwareOSU Google form](http://goo.gl/forms/Oy5kZ4xHbX) to sign-up.
 
-# Updates
+# Milestones
+* 10/27/2015 - AwareOSU has 400 users.
+
+* 10/27/2015 - AwareOSU has 300 users.
+
+* 10/27/2015 - AwareOSU has 200 users.
+
 * 10/24/2015 - AwareOSU is now running from a Raspberry Pi! What does this mean? Basically, this means that AwareOSU is just about fully automated. The only thing I do now is add emails to the Google Group of people who have subscribed, and the Pi uses a CRON job to run Aware OSU every morning at 10:15.
 
 * 10/22/2015 - Program now searches and retrieves on-campus crimes, in addition to off-campus crimes. 
+
+* 10/17/2015 - AwareOSU has 100 users.
 
 * 10/17/2015 - Apparently Google only lets users send out a max of 100 emails/day, so the awareosu@gmail.com account got suspended for a day. From now on, I will be using a Google Group to mass email everyone who signed up through the Google Form. For future software engineers: this is why we test every aspect of our code.
 
