@@ -26,7 +26,7 @@ This Ruby program utilizes three great gems, Mechanize, Nokogiri, and Mail. This
 
 ---
 #### Off-campus crime information is pulled from Zone 4, visualized here
-![Zone 4](https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/zone4.png)
+![Zone 4](https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/zone4.PNG)
 
 # Why are some crimes listed multiple times?
 For example:
