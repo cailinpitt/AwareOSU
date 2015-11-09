@@ -1,6 +1,5 @@
 =begin
 	TODO: Code cleanup (make classes)
-	TODO: Improve "no crimes" email, make on-campus crimes independent of off-campus crimes
 	Created by Cailin Pitt on 10/15/2015
 =end
 
@@ -33,11 +32,12 @@ def main
 	# Searching for all crimes from yesterday
 
 	button = search_form.button_with(:type => "submit")
-	# Get button in order to submit search
+	# Get submit button in order to submit search
 
 	search_results = agent.submit(search_form, button)
 	# Page containing the information we want to sift through.
-	# Time for Nokogiri
+
+	# Time to use Nokogiri
 
 	passArray = IO.readlines('/home/pi/Documents/p')
 
@@ -51,21 +51,19 @@ def main
 	Mail.defaults do
 	  delivery_method :smtp, options
 	end
-	# Set up mail stuff
+	# Set up mail options
 
 	resultPage = Nokogiri::HTML(search_results.body)
 	products = resultPage.css("span[class='ErrorLabel']")
 	# We use this span class to figure out if there are crimes for the specified date or not.
+	noCrimes = false;
 
 	if products.text.to_s.eql? "Your search produced no records."
-		messageBody = "Hi. As of #{Time.now}, there are no crimes listed on the Columbus Police Department's website.\nAs always, you can check for crimes around the campus area yourself by visiting:\nhttp://www.columbuspolice.org/reports/SearchLocation?loc=zon4.\n\n\nBest,\n\nAware OSU"
-		Mail.deliver do
-			     to 'awareosulist@googlegroups.com'
-			   from 'awareosu@gmail.com'
-			subject 'Aware OSU Digest - No Crimes'
-			   body messageBody
-		end
-		# Case where no crimes have occurred yesterday (very rare for this to occur, and most likely due to program running before crimes have been uploaded to CPD web portal
+		crimeHTML = "<h1>0 Off-campus crimes for #{yesterday}</h1>"
+		crimeHTML += '<p>This is either due to no crimes occuring off-campus, or the Columbus Police Department forgetting to upload crime information.</p><p>Please be sure to check <a href="http://www.columbuspolice.org/reports/SearchLocation?loc=zon4">the CPD web portal</a> later today or tomorrow for any updates.</p>'
+		# Case where no crimes have occurred yesterday (very rare for this to occur, and most likely due to program running before crimes have been uploaded to CPD web portal or CPD forgetting to upload crimes (which did happen on 10/26/2015).
+
+		noCrimes = true;
 	else
 		# Else, crimes have occured :(
 		# Parse HTML to get crimes, send to email list.
@@ -80,11 +78,11 @@ def main
 		crimeHTML = crimeHTML + '<table style="width:80%;text-align: left;"><tbody><tr><th>CRNumber</th><th>Description</th><th>Location</th><th>Link</th></tr>'
 		# Set up table for information
 		
-	i = 0
-	j = 0;
-	linkIndex = 1;
+		i = 0
+		j = 0;
+		linkIndex = 1;
 
-		while i < crimeNum do
+		while ((i < crimeNum) && (i < 145)) do
 			report = '';
 			for j in 11...crimeReportNumbers[linkIndex]["onclick"].length - 1
 				char = '' + crimeReportNumbers[linkIndex]["onclick"][j]
@@ -101,6 +99,12 @@ def main
 			linkIndex += 1
 			# Put information in table
 		end
+		# Crimes are retrieved from a table seperated by pages. Each page holds 29 crimes.
+		# JavaScript is used for pagination, and since Mechanize/Nokogiri cannot interact with JS (only HTML),
+		# the program can only retrieve the first 29 crimes (hence i < 145)
+
+		# Until I figure out how to deal with pagination, we will only return the first 29 crimes.
+	end
 
 		page = agent.get "http://www.ps.ohio-state.edu/police/daily_log/view.php?date=yesterday"
 		campusPage = Nokogiri::HTML(page.body)
@@ -125,18 +129,31 @@ def main
 		end
 		# Retrieve on campus crimes
 
-		Mail.deliver do
-			     to 'awareosulist@googlegroups.com'
-			   from 'awareosu@gmail.com'
-			subject "Aware OSU Digest - #{yesterday}"
+		if !noCrimes
+			Mail.deliver do
+						 to 'awareosulist@googlegroups.com'
+					 from 'awareosu@gmail.com'
+				subject "AwareOSU Digest - #{yesterday}"
 
-			html_part do
+				html_part do
+					 content_type 'text/html; charset=UTF-8'
+					 body crimeHTML + "</tbody></table><br><p>Best,</p><p>AwareOSU</p>"
+				end
+			end
+		# Send out crime information to everyone on email list.
+
+		else
+			Mail.deliver do
+					   to 'awareosulist@googlegroups.com'
+					 from 'awareosu@gmail.com'
+				subject "AwareOSU Digest - No Crimes On #{yesterday}"
+
+				html_part do
 				 content_type 'text/html; charset=UTF-8'
-	  		 body crimeHTML + "</tbody></table><p>Best,</p><p>Aware OSU</p>"
+				 body crimeHTML + "<br><p>Best,</p><p>AwareOSU</p>"
+				end
 			end
 		end
-		# Send out crime information to everyone on email list.
-	end
 end
 
 main
