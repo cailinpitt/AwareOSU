@@ -27,7 +27,7 @@
 <h1>
 <a id="features" class="anchor" href="#features" aria-hidden="true"><span class="octicon octicon-link"></span></a>Features</h1>
 
-<p>Program runs once every day (using a CRON job), webscrapes the <a href="http://www.columbuspolice.org/reports/">Columbus Police Department's unofficial web report portal</a> and the <a href="http://www.ps.ohio-state.edu/police/daily_log/view.php?date=yesterday">OSU Police department's daily log system</a>, finds the previous days crimes, and emails the list of crimes to a Google Group of users who signed up for the mailing list.</p>
+<p>Program runs once every day (using a CRON job), webscrapes the <a href="http://www.columbuspolice.org/reports/">Columbus Police Department's unofficial web report portal</a> (to find all crimes committed in zone 4, more on zone 4 later) and the <a href="http://www.ps.ohio-state.edu/police/daily_log/view.php?date=yesterday">OSU Police department's daily log system</a>, finds the previous days crimes, and emails the list of crimes to a Google Group of users who signed up for the mailing list.</p>
 
 <h1>
 <a id="great-overview-what-is-the-code-actually-doing" class="anchor" href="#great-overview-what-is-the-code-actually-doing" aria-hidden="true"><span class="octicon octicon-link"></span></a>Great overview. What is the code actually doing?</h1>
@@ -55,6 +55,13 @@
 <a id="say-hi-to-the-raspberry-pi-that-runs-awareosu-every-morning" class="anchor" href="#say-hi-to-the-raspberry-pi-that-runs-awareosu-every-morning" aria-hidden="true"><span class="octicon octicon-link"></span></a>Say hi to the Raspberry Pi that runs AwareOSU every morning!</h4>
 
 <p><img src="https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/pi.png" alt="Raspberry Pi"></p>
+
+<hr>
+
+<h4>
+<a id="off-campus-crime-information-is-pulled-from-zone-4-which-contains-precincts-2-3-4-and-5-visualized-here" class="anchor" href="#off-campus-crime-information-is-pulled-from-zone-4-which-contains-precincts-2-3-4-and-5-visualized-here" aria-hidden="true"><span class="octicon octicon-link"></span></a>Off-campus crime information is pulled from Zone 4 (which contains Precincts 2, 3, 4, and 5), visualized here</h4>
+
+<p><img src="https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/zone4.PNG" alt="Zone 4"></p>
 
 <h1>
 <a id="why-are-some-crimes-listed-multiple-times" class="anchor" href="#why-are-some-crimes-listed-multiple-times" aria-hidden="true"><span class="octicon octicon-link"></span></a>Why are some crimes listed multiple times?</h1>
@@ -84,7 +91,7 @@
 <a id="milestones" class="anchor" href="#milestones" aria-hidden="true"><span class="octicon octicon-link"></span></a>Milestones</h1>
 
 <ul>
-<li><p>10/27/2015 - AwareOSU has 400 users.</p></li>
+<li><p>10/27/2015 - AwareOSU has 400 users (note that 10/27/2015 was the day OSU recieved an online threat).</p></li>
 <li><p>10/27/2015 - AwareOSU has 300 users.</p></li>
 <li><p>10/27/2015 - AwareOSU has 200 users.</p></li>
 <li><p>10/24/2015 - AwareOSU is now running from a Raspberry Pi! What does this mean? Basically, this means that AwareOSU is just about fully automated. The only thing I do now is add emails to the Google Group of people who have subscribed, and the Pi uses a CRON job to run Aware OSU every morning at 10:15.</p></li>
