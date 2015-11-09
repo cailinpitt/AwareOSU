@@ -5,7 +5,7 @@ Be aware of crimes around the campus area.
 OSU students (well, college students in general) enjoy being safe. Whenever a crime occurs on campus that has a continuing safety threat, OSU sends every student and staff an email briefly explaining the crime. However, OSU doesn't send crime alerts for all crimes that occur *on and around* campus (where many students live). The reality is that we live in a dangerous world, and we want to be aware of what is happening around us.
 
 # Features
-Program runs once every day (using a CRON job), webscrapes the [Columbus Police Department's unofficial web report portal](http://www.columbuspolice.org/reports/) and the [OSU Police department's daily log system](http://www.ps.ohio-state.edu/police/daily_log/view.php?date=yesterday), finds the previous days crimes, and emails the list of crimes to a Google Group of users who signed up for the mailing list.
+Program runs once every day (using a CRON job), webscrapes the [Columbus Police Department's unofficial web report portal](http://www.columbuspolice.org/reports/) (to find all crimes committed in zone 4, more on zone 4 later) and the [OSU Police department's daily log system](http://www.ps.ohio-state.edu/police/daily_log/view.php?date=yesterday), finds the previous days crimes, and emails the list of crimes to a Google Group of users who signed up for the mailing list.
 
 # Great overview. What is the code actually doing?
 This Ruby program utilizes three great gems, Mechanize, Nokogiri, and Mail. This program visits the CPD web portal and OSU PD online log system (listed above) using Mechanize, parses the HTML of the search page containing all crimes committed yesterday using Nokogiri, and sends the information out in a HTML table using Mail.
@@ -24,6 +24,10 @@ This Ruby program utilizes three great gems, Mechanize, Nokogiri, and Mail. This
 #### Say hi to the Raspberry Pi that runs AwareOSU every morning!
 ![Raspberry Pi](https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/pi.png)
 
+---
+#### Off-campus crime information is pulled from Zone 4, visualized here
+![Zone 4](https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/zone4.png)
+
 # Why are some crimes listed multiple times?
 For example:
 
@@ -35,7 +39,7 @@ This is because some crimes may have multiple victims, as seen on the Columbus P
 Currently, victim names aren't included in the digest. Even though this is publically accessible information, I'm not sure how comfortable people would feel with names being emailed to the 400+ AwareOSU users.
 
 # What does the shell script do?
-My Pi has been having problems staying connected to an ethernet connection. It will say that it has a connection, but in actuality I cannot access the internet. This seems to be a semi-common problem among Pis, and this also causes problems for AwareOSU since it can't access the internet if there isn't a connection. This script resets the ethernet connection every morning one minute before AwareOSU is scheduled to run, ensuring that the Pi has a valid, working internet connection.
+My Pi sometimes runs into an issue where it has trouble staying connected to the Internet while using an ethernet connection. It will say that it has a connection, but in actuality I cannot access the internet. This seems to be a semi-common problem among Pis, and this also causes problems for AwareOSU since it can't access the internet if there isn't a connection. This script resets the ethernet connection every morning one minute before AwareOSU is scheduled to run, ensuring that the Pi has a valid, working internet connection.
 
 # Goals
 1. Develop Android App (no current plans for iPhone because it's $100/year to be an iOS developer, poor college student problems)
@@ -44,7 +48,7 @@ My Pi has been having problems staying connected to an ethernet connection. It w
 Visit the [AwareOSU Google form](http://goo.gl/forms/Oy5kZ4xHbX) to sign-up.
 
 # Milestones
-* 10/27/2015 - AwareOSU has 400 users.
+* 10/27/2015 - AwareOSU has 400 users (note that 10/27/2015 was the day OSU recieved an online threat).
 
 * 10/27/2015 - AwareOSU has 300 users.
 
