@@ -16,6 +16,7 @@ require 'resolv-replace.rb'
 
 def main
 	yesterday = (Time.now - (3600 * 24)).strftime("%m/%d/%Y")
+	yesterdayWithDay = (Time.now - (3600 * 24)).strftime("%A, %m/%d/%Y")
 	# Get yesterday's date
 	
 	agent = Mechanize.new
@@ -64,7 +65,7 @@ def main
 	noCrimes = false;
 
 	if products.text.to_s.eql? "Your search produced no records."
-		crimeHTML = "<h1>0 Off-campus crimes for #{yesterday}</h1>"
+		crimeHTML = "<h1>0 Off-campus crimes for #{yesterdayWithDay}</h1>"
 		crimeHTML += '<p>This is either due to no crimes occuring off-campus, or the Columbus Police Department forgetting to upload crime information.</p><p>Please be sure to check <a href="http://www.columbuspolice.org/reports/SearchLocation?loc=zon4">the CPD web portal</a> later today or tomorrow for any updates.</p>'
 		# Case where there aren't any crimes for zone 4 on the CPD web portal.
 		# Most likely due to program running before crimes have been uploaded to CPD web portal or CPD forgetting to upload crimes (which did happen on 10/26/2015).
@@ -82,7 +83,7 @@ def main
 		# Get crime information
 
 		crimeNum = crimeInfo.length
-		crimeHTML = "<h1>#{crimeNum/5} Off-campus crimes for #{yesterday}</h1>"
+		crimeHTML = "<h1>#{crimeNum/5} Off-campus crimes for #{yesterdayWithDay}</h1>"
 		crimeHTML = crimeHTML + '<table style="width:80%;text-align: left;"><tbody><tr><th>CRNumber</th><th>Description</th><th>Location</th><th>Link</th></tr>'
 		# Set up table for information
 		
@@ -126,7 +127,7 @@ def main
 	# Visit OSU PD's web log, get number of crimes committed on campus the previous day
 
 	crimeHTML = crimeHTML + "<br><br></tbody></table>"
-	crimeHTML = crimeHTML + "<h1>#{numberOfOSUCrimes} On-campus crimes for #{yesterday}</h1>"
+	crimeHTML = crimeHTML + "<h1>#{numberOfOSUCrimes} On-campus crimes for #{yesterdayWithDay}</h1>"
 	crimeHTML = crimeHTML + '<table style="width:80%;text-align: left;"><tbody><tr><th>Report Number</th><th>Incident Type</th><th>Location</th><th>Description</th></tr>'
 	# Setup table for on-campus crime information
 		
@@ -144,26 +145,26 @@ def main
 
 	if !noCrimes
 		Mail.deliver do
-					 to 'awareosulist@googlegroups.com'
-				 from 'awareosu@gmail.com'
+			to 'awareosulist@googlegroups.com'
+			from 'awareosu@gmail.com'
 			subject "AwareOSU Digest - #{yesterday}"
 
 			html_part do
 				 content_type 'text/html; charset=UTF-8'
-				 body crimeHTML + "</tbody></table><br><p>Best,</p><p>AwareOSU</p>"
+				 body crimeHTML + '</tbody></table><br><p>Best,</p><p>AwareOSU</p><br><br><p>P.S. You can visit this <a href="http://goo.gl/forms/n3q6D53TT3">link</a> for subscription options.</p>'
 			end
 		end
 	# Case where there were off-campus crimes
 
 	else
 		Mail.deliver do
-				   to 'awareosulist@googlegroups.com'
-				 from 'awareosu@gmail.com'
+			to 'awareosulist@googlegroups.com'
+			from 'awareosu@gmail.com'
 			subject "AwareOSU Digest - No Crimes On #{yesterday}"
 
 			html_part do
 			 content_type 'text/html; charset=UTF-8'
-			 body crimeHTML + "<br><p>Best,</p><p>AwareOSU</p>"
+			 body crimeHTML + '<br><p>Best,</p><p>AwareOSU</p><br><br><p>P.S. You can visit this <a href="http://goo.gl/forms/n3q6D53TT3">link</a> for subscription options.</p>'
 			end
 		end
 	end
