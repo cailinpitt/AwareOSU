@@ -42,7 +42,7 @@ Currently, victim names aren't included in the digest. Even though this is publi
 My Pi sometimes runs into an issue where it has trouble staying connected to the Internet while using an ethernet connection. It will say that it has a connection, but in actuality I cannot access the internet. This seems to be a semi-common problem among Pis, and this also causes problems for AwareOSU since it can't access the internet if there isn't a connection. This script resets the ethernet connection every morning one minute before AwareOSU is scheduled to run, ensuring that the Pi has a valid, working internet connection.
 
 # Goals
-1. Develop Android App (no current plans for iPhone because it's $100/year to be an iOS developer, poor college student problems)
+1. Develop Ruby on Rails web application containing a history of past crimes, with Google Maps showing crime locations.
 
 # How to sign up
 Visit the [AwareOSU Google form](http://goo.gl/forms/Oy5kZ4xHbX) to sign-up.
