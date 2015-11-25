@@ -48,6 +48,8 @@ My Pi sometimes runs into an issue where it has trouble staying connected to the
 Visit the [AwareOSU Google form](http://goo.gl/forms/Oy5kZ4xHbX) to sign-up.
 
 # Milestones
+* 11/25/2015 - AwareOSU has 600 users.
+
 * 11/24/2015 - AwareOSU has 500 users.
 
 * 10/27/2015 - AwareOSU has 400 users (note that 10/27/2015 was the day OSU recieved an online threat).
