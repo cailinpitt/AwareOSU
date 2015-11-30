@@ -68,9 +68,6 @@ if products.text.to_s.eql? "Your search produced no records."
 	crimeHTML += '<p>This is either due to no crimes occuring off-campus, or the Columbus Police Department forgetting to upload crime information.</p><p>Please be sure to check <a href="http://www.columbuspolice.org/reports/SearchLocation?loc=zon4">the CPD web portal</a> later today or tomorrow for any updates.</p>'
 	# Case where there aren't any crimes for zone 4 on the CPD web portal.
 	# Most likely due to program running before crimes have been uploaded to CPD web portal or CPD forgetting to upload crimes (which did happen on 10/26/2015).
-
-	noCrimes = true;
-	# Set boolean noCrimes to true
 	
 else
 	# Else, crimes have occured :(
@@ -80,7 +77,7 @@ else
 	crimeInfo = crimeTable.css('td')
 	crimeReportNumbers = crimeTable.css('tr')
 	# Get crime information
-	mapURL = "<img src = 'https://maps.googleapis.com/maps/api/staticmap?zoom=12&center=123+west+lane+avenue+columbus+ohio&size=300x150&scale=2&maptype=roadmap&markers=color:blue%7Clabel:"
+	mapURL = "<img src = 'https://maps.googleapis.com/maps/api/staticmap?zoom=12&center=123+west+lane+avenue+columbus+ohio&size=370x330&scale=2&maptype=roadmap&markers=color:blue%7Clabel:"
 	crimeNum = crimeInfo.length
 	crimeHTML += "<h1>#{crimeNum/5} Off-campus crimes for #{yesterdayWithDay}</h1>"
 	
@@ -116,7 +113,7 @@ else
 		linkIndex += 1
 		# Insert information into table
 	end
-	mapURL += "&maptype=terrain&key=" + passArray[1].delete!("\n")
+	mapURL += "&maptype=terrain&key=" + passArray[1]
 	# End table
 	
 	# Crimes are retrieved from a table seperated by pages. Each page holds 29 crimes.
@@ -133,7 +130,7 @@ crimeHTML += '<table style="width:80%;text-align: left;" cellpadding="10"><tbody
 crimeHTML += crimeTable
 crimeHTML += '</tbody></table>'
 
-page = agent.get "http://www.ps.ohio-state.edu/police/daily_log/view.php?date=today"
+page = agent.get "http://www.ps.ohio-state.edu/police/daily_log/view.php?date=yesterday"
 campusPage = Nokogiri::HTML(page.body)
 crimeTable = campusPage.css("table[width='680']")
 crimesFromTable = crimeTable.css("td[class='log']")
@@ -145,7 +142,7 @@ if numberOfOSUCrimes == 0
 	crimeHTML = crimeHTML + '<p>This is either due to no crimes occuring on-campus, or the Ohio State Police Department forgetting to upload crime information.</p><p>Please be sure to check <a href="http://www.ps.ohio-state.edu/police/daily_log/view.php?date=yesterday">the OSU PD web portal</a> later today or tomorrow for any updates.</p>'
 	
 else
-	mapURL = "<img src = 'https://maps.googleapis.com/maps/api/staticmap?zoom=12&center=the+ohio+state+university&size=300x150&scale=2&maptype=roadmap&markers=color:blue%7Clabel:"
+	mapURL = "<img src = 'https://maps.googleapis.com/maps/api/staticmap?zoom=12&center=the+ohio+state+university&size=370x330&scale=2&maptype=roadmap&markers=color:blue%7Clabel:"
 	crimeHTML = crimeHTML + "<br><br>"
 	
 	crimeHTML = crimeHTML + "<h1>#{numberOfOSUCrimes} On-campus crimes for #{yesterdayWithDay}</h1>"
@@ -178,9 +175,9 @@ else
 end
 
 Mail.deliver do
-	to 'cailinpitt1@gmail.com'
+	to 'awareosulist@googlegroups.com'
 	from 'awareosu@gmail.com'
-	subject "AwareOSU Digest - #{yesterdayWithDay}"
+	subject "AwareOSU - #{yesterdayWithDay}"
 
 	html_part do
 		 content_type 'text/html; charset=UTF-8'
