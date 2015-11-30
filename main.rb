@@ -60,7 +60,6 @@ resultPage = Nokogiri::HTML(search_results.body)
 products = resultPage.css("span[class='ErrorLabel']")
 # We use this span class to figure out if there are crimes for the specified date or not.
 
-noCrimes = false
 crimeHTML = ""
 # Declare variables
 
@@ -81,12 +80,13 @@ else
 	crimeInfo = crimeTable.css('td')
 	crimeReportNumbers = crimeTable.css('tr')
 	# Get crime information
-
+	mapURL = "<img src = 'https://maps.googleapis.com/maps/api/staticmap?zoom=12&center=123+west+lane+avenue+columbus+ohio&size=300x150&scale=2&maptype=roadmap&markers=color:blue%7Clabel:"
 	crimeNum = crimeInfo.length
 	crimeHTML += "<h1>#{crimeNum/5} Off-campus crimes for #{yesterdayWithDay}</h1>"
-	crimeHTML = crimeHTML + '<table style="width:80%;text-align: left;" cellpadding="10"><tbody><tr><th>CRNumber</th><th>Description</th><th>Location</th><th>Link</th></tr>'
-	# Set up table for information
 	
+	
+	# Set up table for information
+	crimeTable = ""
 	i = 0
 	j = 0;
 	linkIndex = 1;
@@ -100,18 +100,23 @@ else
 		end
 		# This loop takes care of setting up the links to each individual crime's page, where more information is listed.
 		
-		crimeHTML = crimeHTML + '<tr>'
-		crimeHTML = crimeHTML + '<td>' + crimeInfo[i].text + '</td>'
-		crimeHTML = crimeHTML + '<td>' + crimeInfo[i + 1].text + '</td>'
-		crimeHTML = crimeHTML + '<td>' + crimeInfo[i + 4].text + '</td>'
-		crimeHTML = crimeHTML + '<td>' + 'http://www.columbuspolice.org/reports/PublicReport?caseID=' + report + '</td>'
-		crimeHTML = crimeHTML + '</tr>'
+		crimeTable = crimeTable + '<tr>'
+		crimeTable = crimeTable + '<td>' + crimeInfo[i].text + '</td>'
+		crimeTable = crimeTable + '<td>' + crimeInfo[i + 1].text + '</td>'
+		crimeTable = crimeTable + '<td>' + crimeInfo[i + 4].text + '</td>'
+		crimeTable = crimeTable + '<td>' + 'http://www.columbuspolice.org/reports/PublicReport?caseID=' + report + '</td>'
+		crimeTable = crimeTable + '</tr>'
+		
+		location = crimeInfo[i + 4].text
+		location.delete!("&")
+		mapURL += "%7C" + location.gsub!(/\s+/, '+') + "+Columbus+Ohio"
+		# Clean up location to make it suitable for testing
+		
 		i += 5
 		linkIndex += 1
 		# Insert information into table
 	end
-	
-	crimeHTML = crimeHTML + '</tbody></table>'
+	mapURL += "&maptype=terrain&key=" + passArray[1].delete!("\n")
 	# End table
 	
 	# Crimes are retrieved from a table seperated by pages. Each page holds 29 crimes.
@@ -120,9 +125,15 @@ else
 
 	# Until I figure out how to deal with pagination, we will only return the first 29 crimes.
 	# We rarely have more than 29 crimes, so this is a rare case, however it's something I still want to take care of.
+	
+	
 end
+crimeHTML += mapURL
+crimeHTML += '<table style="width:80%;text-align: left;" cellpadding="10"><tbody><tr><th>CRNumber</th><th>Description</th><th>Location</th><th>Link</th></tr>'
+crimeHTML += crimeTable
+crimeHTML += '</tbody></table>'
 
-page = agent.get "http://www.ps.ohio-state.edu/police/daily_log/view.php?date=yesterday"
+page = agent.get "http://www.ps.ohio-state.edu/police/daily_log/view.php?date=today"
 campusPage = Nokogiri::HTML(page.body)
 crimeTable = campusPage.css("table[width='680']")
 crimesFromTable = crimeTable.css("td[class='log']")
@@ -134,29 +145,40 @@ if numberOfOSUCrimes == 0
 	crimeHTML = crimeHTML + '<p>This is either due to no crimes occuring on-campus, or the Ohio State Police Department forgetting to upload crime information.</p><p>Please be sure to check <a href="http://www.ps.ohio-state.edu/police/daily_log/view.php?date=yesterday">the OSU PD web portal</a> later today or tomorrow for any updates.</p>'
 	
 else
-	crimeHTML = crimeHTML + "<br><br></tbody></table>"
+	mapURL = "<img src = 'https://maps.googleapis.com/maps/api/staticmap?zoom=12&center=the+ohio+state+university&size=300x150&scale=2&maptype=roadmap&markers=color:blue%7Clabel:"
+	crimeHTML = crimeHTML + "<br><br>"
+	
 	crimeHTML = crimeHTML + "<h1>#{numberOfOSUCrimes} On-campus crimes for #{yesterdayWithDay}</h1>"
-	crimeHTML = crimeHTML + '<table style="width:80%;text-align: left;" cellpadding="10"><tbody><tr><th>Report Number</th><th>Incident Type</th><th>Location</th><th>Description</th></tr>'
+	
+	crimeTable = '<table style="width:80%;text-align: left;" cellpadding="10"><tbody><tr><th>Report Number</th><th>Incident Type</th><th>Location</th><th>Description</th></tr>'
 	# Setup table for on-campus crime information
 	
 	i = 0
 	while i < crimesFromTable.length do
-		crimeHTML = crimeHTML + '<tr>'
-		crimeHTML = crimeHTML + '<td>' + crimesFromTable[i].text + '</td>'
-		crimeHTML = crimeHTML + '<td>' + crimesFromTable[i + 5].text + '</td>'
-		crimeHTML = crimeHTML + '<td>' + crimesFromTable[i + 6].text + '</td>'
-		crimeHTML = crimeHTML + '<td>' + crimesFromTable[i + 7].text + '</td>'
-		crimeHTML = crimeHTML + '</tr>'
+		crimeTable = crimeTable + '<tr>'
+		crimeTable = crimeTable + '<td>' + crimesFromTable[i].text + '</td>'
+		crimeTable = crimeTable + '<td>' + crimesFromTable[i + 5].text + '</td>'
+		crimeTable = crimeTable + '<td>' + crimesFromTable[i + 6].text + '</td>'
+		crimeTable = crimeTable + '<td>' + crimesFromTable[i + 7].text + '</td>'
+		crimeTable = crimeTable + '</tr>'
+		
+		location = crimesFromTable[i + 6].text
+		location.delete!("&")
+		mapURL += "%7C" + location.gsub!(/\s+/, '+')
+		# Clean up location to make it suitable for searching
+		
 		i += 8
 	end
 		# Insert on-campus crime information into table
-		
-		crimeHTML = crimeHTML + '</tbody></table>'
+		mapURL += "&maptype=terrain&key=" + passArray[1].delete!("\n")
+		crimeHTML += mapURL
+		crimeHTML += crimeTable
+		crimeHTML += '</tbody></table>'
 		# End table
 end
 
 Mail.deliver do
-	to 'awareosulist@googlegroups.com'
+	to 'cailinpitt1@gmail.com'
 	from 'awareosu@gmail.com'
 	subject "AwareOSU Digest - #{yesterdayWithDay}"
 
