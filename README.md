@@ -48,6 +48,8 @@ My Pi sometimes runs into an issue where it has trouble staying connected to the
 Visit the [AwareOSU Google form](http://goo.gl/forms/Oy5kZ4xHbX) to sign-up.
 
 # Milestones
+* 12/3/2015 - AwareOSU has 700 users.
+
 * 11/25/2015 - AwareOSU has 600 users.
 
 * 11/24/2015 - AwareOSU has 500 users.
@@ -69,6 +71,7 @@ Visit the [AwareOSU Google form](http://goo.gl/forms/Oy5kZ4xHbX) to sign-up.
 * 10/16/2015 - AwareOSU is released.
 
 # Press
+* [The Lantern](http://thelantern.com/2015/12/ohio-state-student-creates-crime-awareness-email-service/)
 * [NBC4](http://nbc4i.com/2015/11/24/osu-student-creates-computer-program-to-track-crimes-in-and-around-campus/)
 * [The Columbus Dispatch](http://www.dispatch.com/content/stories/local/2015/11/24/app-gathers-osu-area-cop-reports.html)
 * [Lantern TV](https://youtu.be/MAaY5FkLQqI?t=1m51s)
