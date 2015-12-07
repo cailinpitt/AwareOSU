@@ -80,7 +80,7 @@ else
 	crimeInfo = crimeTable.css('td')
 	crimeReportNumbers = crimeTable.css('tr')
 	# Get crime information
-	mapURL = "<img src = 'https://maps.googleapis.com/maps/api/staticmap?size=370x330&scale=2&maptype=roadmap&markers=color:blue%7Clabel:"
+	mapURL = "<img src = 'https://maps.googleapis.com/maps/api/staticmap?zoom=12&center=the+ohio+state+university&size=370x330&scale=2&maptype=roadmap&markers=color:blue%7Clabel:"
 	crimeNum = crimeInfo.length
 	crimeHTML += "<h1>#{crimeNum/5} Off-campus crimes for #{yesterdayWithDay}</h1>"
 	crimeTableInfo = ""
