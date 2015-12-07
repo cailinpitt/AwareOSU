@@ -199,7 +199,7 @@ Mail.deliver do
 
 	html_part do
 		 content_type 'text/html; charset=UTF-8'
-		 body crimeHTML + '<br><p>Best,</p><p>AwareOSU</p><br><br><p>P.S. You can visit this <a href="http://goo.gl/forms/n3q6D53TT3">link</a> for subscription options.</p>'
+		 body crimeHTML + '<br><p>Best,</p><p>AwareOSU</p><br><br><p>P.S. Please visit this <a href="http://goo.gl/forms/n3q6D53TT3">link</a> to subscribe/unsubscribe.</p>'
 	end
 end
 # Send crimes to users
