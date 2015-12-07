@@ -12,12 +12,12 @@ This Ruby program utilizes three great gems, Mechanize, Nokogiri, and Mail. This
 
 # Images
 #### Email from AwareOSU
-![Email from AwareOSU](https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/fullEmail.PNG)
-
+![Email from AwareOSU (Map)](https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/fullEmail1.PNG)
+![Email from AwareOSU](https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/fullEmail2.PNG)
 ---
 
 #### Looks good on mobile too
-<img src="https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/IMG_2862.jpg" alt="Mobile" width="250" height="445"/>
+<img src="https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/image1.PNG" alt="Mobile" width="250" height="445"/>
 
 ---
 
@@ -49,6 +49,8 @@ Visit the [AwareOSU Google form](http://goo.gl/forms/Oy5kZ4xHbX) to sign-up.
 
 # Milestones
 * 12/3/2015 - AwareOSU has 700 users.
+
+* 12/01/2015 - AwareOSU now includes static Google Maps so users can visualize where crimes occurred.
 
 * 11/25/2015 - AwareOSU has 600 users.
 
