@@ -2,9 +2,6 @@
 	Created by Cailin Pitt on 12/08/2015
 	
 	Ruby script that webscrapes crime information from the Columbus PD and the OSU PD's online logs and emails it to users in a weekly report.
-	
-	TODO: Add maps
-	TODO: Test
 =end
 
 # Mechanize gets the website and transforms into HTML file.
@@ -16,9 +13,10 @@ require 'mail'
 # resolv-replace.rb is more for testing, supplies nice error statements in case this script runs into network issues
 require 'resolv-replace.rb'
 
-yesterday = (Time.now - (3600 * 24)).strftime("%m/%d/%Y")
+yesterday =(Time.now - (3600 * 24)).strftime("%m/%d/%Y")
 yesterdayWithDay = (Time.now - (3600 * 24)).strftime("%A, %m/%d/%Y")
-# Get yesterday's date
+lastFriday = (Time.now - (7 * (3600 * 24))).strftime("%A, %m/%d/%Y")
+# Get dates
 	
 agent = Mechanize.new
 agent.open_timeout = 60
@@ -69,7 +67,18 @@ crimeTable = ""
 crimeNum = 0
 # Declare variables
 
-if products.text.to_s.eql? "Your search produced no records." == false
+if !File.exist? "/home/pi/Documents/AwareOSU/offcampus.txt"
+	offCampus = File.open("/home/pi/Documents/AwareOSU/offcampus.txt", "w")
+	offCampus.close
+end
+
+if !File.exist? "/home/pi/Documents/AwareOSU/oncampus.txt"
+	onCampus = File.open("/home/pi/Documents/AwareOSU/oncampus.txt", "w")
+	onCampus.close
+end
+# If files do not exist, we need to create them
+
+if !products.text.to_s.eql? "Your search produced no records."
 	# Crimes have occured :(
 	# Parse HTML to get crimes, save in textfile.
 
@@ -117,12 +126,12 @@ if products.text.to_s.eql? "Your search produced no records." == false
 
 	# Until I figure out how to deal with pagination, we will only return the first 29 crimes.
 	# We rarely have more than 29 crimes, so this is a rare case, however it's something I still want to take care of.
+
+	offCampus.close
+	# Close off-campus text file.
 end
 
-offCampus.close
-# Close off-campus text file.
-
-onCampus = File.open("/home/pi/Documents/AwareOSU/offcampus.txt", "a")
+onCampus = File.open("/home/pi/Documents/AwareOSU/oncampus.txt", "a")
 # Open file to dump on-campus information into
 
 page = agent.get "http://www.ps.ohio-state.edu/police/daily_log/view.php?date=yesterday"
@@ -132,7 +141,7 @@ crimesFromTable = crimeTable.css("td[class='log']")
 numberOfOSUCrimes = crimesFromTable.length/8
 # Visit OSU PD's web log, get number of crimes committed on campus the previous day
 
-if numberOfOSUCrimes == 0
+if numberOfOSUCrimes > 0
 # There were on-campus crimes today, get information and save to textfile.
 
 i = 0
@@ -154,32 +163,10 @@ onCampus.close
 if yesterdayWithDay.include? "Friday"
 	# Last day of week, time to send digest email.
 	
-	mapURL = "<img src = 'https://maps.googleapis.com/maps/api/staticmap?zoom=13&center=the+ohio+state+university&size=370x330&scale=2&maptype=roadmap&markers=color:blue%7Clabel:"
-	
 	offCampusArray = IO.readlines('/home/pi/Documents/AwareOSU/offcampus.txt')
 	# Read off-campus crime information into Array
 
-	crimeTable = "<h1>Off-campus crimes for the week of #{yesterdayWithDay}</h1>"
-	
-	i = 0
-	while i < offCampusArray.length do
-		location = offCampusArray[i + 3]
-		location.delete!("&")
-		# Get rid of unnecessary characters
-		
-		if location.include? " "
-			mapURL += "%7C" + location.gsub!(/\s+/, '+') + "+Columbus+Ohio"
-		else
-			mapURL += "%7C" + location + "+Columbus+Ohio"
-		end
-		# Clean up location to make it suitable for Google Maps
-		
-		i += 5
-	end
-	mapURL += "&maptype=terrain&key=" + passArray[1].delete!("\n")
-	crimeTable += mapURL
-	# Adds Google Map to HTML result
-	
+	crimeTable = "<h1>#{offCampusArray.length/5} Off-campus crimes for the week of #{yesterdayWithDay}</h1>"
 	crimeTable += '<table style="width:80%;text-align: left;" cellpadding="10"><tbody><tr><th>Date</th><th>Report Number</th><th>Incident Type</th><th>Location</th><th>Description</th></tr>'
 		# Setup table for on-campus crime information
 	
@@ -206,28 +193,7 @@ if yesterdayWithDay.include? "Friday"
 	onCampusArray = IO.readlines('/home/pi/Documents/AwareOSU/oncampus.txt')
 	# Read on-campus crime information into Array
 
-	crimeTable += "<h1>On-campus crimes for the week of #{yesterdayWithDay}</h1>"
-	mapURL = "<img src = 'https://maps.googleapis.com/maps/api/staticmap?zoom=13&center=the+ohio+state+university&size=370x330&scale=2&maptype=roadmap&markers=color:blue%7Clabel:"
-	
-	i = 0
-	while i < onCampusArray.length do
-		location = onCampusArray[i + 3]
-		location.delete!("&")
-		# Get rid of unnecessary characters
-		
-		if location.include? " "
-			mapURL += "%7C" + location.gsub!(/\s+/, '+') + "+Ohio+State+University+columbus+ohio"
-		else
-			mapURL += "%7C" + location + "+Ohio+State+University+columbus+ohio"
-		end
-		# Clean up location to make it suitable for Google Maps
-		
-		i += 5
-	end
-	mapURL += "&maptype=terrain&key=" + passArray[1]
-	crimeTable += mapURL
-	# Adds Google Map to HTML result
-	
+	crimeTable += "<h1>#{onCampusArray.length/5} On-campus crimes for the week of #{yesterdayWithDay}</h1>"
 	crimeTable += '<table style="width:80%;text-align: left;" cellpadding="10"><tbody><tr><th>Date</th><th>Report Number</th><th>Incident Type</th><th>Location</th><th>Description</th></tr>'
 
 	i = 0
@@ -253,18 +219,18 @@ if yesterdayWithDay.include? "Friday"
 
 	offCampus = File.open("/home/pi/Documents/AwareOSU/offcampus.txt", "w")
 	offCampus.close
-	offCampus = File.open("/home/pi/Documents/AwareOSU/oncampus.txt", "w")
+	onCampus = File.open("/home/pi/Documents/AwareOSU/oncampus.txt", "w")
 	onCampus.close
 	# Clear text files, we don't need last week's info anymore
 	
 	Mail.deliver do
 		to 'awareosulist@googlegroups.com'
 		from 'awareosu@gmail.com'
-		subject "AwareOSU - Digest for week of #{yesterdayWithDay}"
+		subject "AwareOSU - Digest for #{lastFriday} to #{yesterdayWithDay}"
 
 		html_part do
 			 content_type 'text/html; charset=UTF-8'
-			 body crimeHTML + '<br><p>Best,</p><p>AwareOSU</p><br><br><p>P.S. Please visit this <a href="http://goo.gl/forms/n3q6D53TT3">link</a> to subscribe/unsubscribe.</p>'
+			 body crimeTable+ '<br><p>Best,</p><p>AwareOSU</p><br><br><p>P.S. Please visit this <a href="http://goo.gl/forms/n3q6D53TT3">link</a> to subscribe/unsubscribe.</p>'
 		end
 	end
 	# Send digest to users
