@@ -19,3 +19,6 @@
 
 #Ignore temp files
 *~
+
+#Ignore text files
+*.txt
