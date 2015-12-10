@@ -47,12 +47,12 @@ search_results = agent.submit(search_form, button)
 
 passArray = IO.readlines('/home/pi/Documents/p')
 
-options = { :address      			=> "smtp.gmail.com",
-          :port                 => 587,
-          :user_name            => 'awareosu',
-          :password             => passArray[0].delete!("\n"),
-          :authentication       => 'plain',
-          :enable_starttls_auto => true  }
+options = {	:address      				=> "smtp.gmail.com",
+          	:port                 => 587,
+          	:user_name            => 'awareosu',
+          	:password             => passArray[0].delete!("\n"),
+          	:authentication       => 'plain',
+          	:enable_starttls_auto => true  }
 
 Mail.defaults do
   delivery_method :smtp, options
@@ -83,7 +83,7 @@ if products.text.to_s.eql? "Your search produced no records." == false
 	crimeNum = crimeInfo.length
 	
 	crimeTableInfo = ""
-	# Set up table for information
+	# Set up variables to hold crime information
 	
 	i = 0
 	j = 0;
@@ -150,14 +150,36 @@ end
 onCampus.close
 # Close onCampus connection
 
-# Now check if yesterday was Saturday. We want to send users a digest of crimes from the previous week
-if yesterdayWithDay.include? "Saturday"
+# Now check if yesterday was Friday. We want to send users a digest of crimes from the previous week
+if yesterdayWithDay.include? "Friday"
 	# Last day of week, time to send digest email.
-
+	
+	mapURL = "<img src = 'https://maps.googleapis.com/maps/api/staticmap?zoom=13&center=the+ohio+state+university&size=370x330&scale=2&maptype=roadmap&markers=color:blue%7Clabel:"
+	
 	offCampusArray = IO.readlines('/home/pi/Documents/AwareOSU/offcampus.txt')
 	# Read off-campus crime information into Array
 
 	crimeTable = "<h1>Off-campus crimes for the week of #{yesterdayWithDay}</h1>"
+	
+	i = 0
+	while i < offCampusArray.length do
+		location = offCampusArray[i + 3]
+		location.delete!("&")
+		# Get rid of unnecessary characters
+		
+		if location.include? " "
+			mapURL += "%7C" + location.gsub!(/\s+/, '+') + "+Columbus+Ohio"
+		else
+			mapURL += "%7C" + location + "+Columbus+Ohio"
+		end
+		# Clean up location to make it suitable for Google Maps
+		
+		i += 5
+	end
+	mapURL += "&maptype=terrain&key=" + passArray[1].delete!("\n")
+	crimeTable += mapURL
+	# Adds Google Map to HTML result
+	
 	crimeTable += '<table style="width:80%;text-align: left;" cellpadding="10"><tbody><tr><th>Date</th><th>Report Number</th><th>Incident Type</th><th>Location</th><th>Description</th></tr>'
 		# Setup table for on-campus crime information
 	
@@ -165,10 +187,15 @@ if yesterdayWithDay.include? "Saturday"
 	while i < offCampusArray.length do
 		crimeTable += '<tr>'
 		crimeTable += '<td>' + offCampusArray[i] + '</td>'
+		# Date
 		crimeTable += '<td>' + offCampusArray[i + 1] + '</td>'
+		# Report Number
 		crimeTable += '<td>' + offCampusArray[i + 2] + '</td>'
+		# Incident Type
 		crimeTable += '<td>' + offCampusArray[i + 3] + '</td>'
+		# Location
 		crimeTable += '<td>' + offCampusArray[i + 4] + '</td>'
+		# Description
 		crimeTable += '</tr>'
 	
 		i += 5
@@ -180,16 +207,42 @@ if yesterdayWithDay.include? "Saturday"
 	# Read on-campus crime information into Array
 
 	crimeTable += "<h1>On-campus crimes for the week of #{yesterdayWithDay}</h1>"
+	mapURL = "<img src = 'https://maps.googleapis.com/maps/api/staticmap?zoom=13&center=the+ohio+state+university&size=370x330&scale=2&maptype=roadmap&markers=color:blue%7Clabel:"
+	
+	i = 0
+	while i < onCampusArray.length do
+		location = onCampusArray[i + 3]
+		location.delete!("&")
+		# Get rid of unnecessary characters
+		
+		if location.include? " "
+			mapURL += "%7C" + location.gsub!(/\s+/, '+') + "+Ohio+State+University+columbus+ohio"
+		else
+			mapURL += "%7C" + location + "+Ohio+State+University+columbus+ohio"
+		end
+		# Clean up location to make it suitable for Google Maps
+		
+		i += 5
+	end
+	mapURL += "&maptype=terrain&key=" + passArray[1]
+	crimeTable += mapURL
+	# Adds Google Map to HTML result
+	
 	crimeTable += '<table style="width:80%;text-align: left;" cellpadding="10"><tbody><tr><th>Date</th><th>Report Number</th><th>Incident Type</th><th>Location</th><th>Description</th></tr>'
 
 	i = 0
 	while i < onCampusArray.length do
 		crimeTable += '<tr>'
 		crimeTable += '<td>' + onCampusArray[i] + '</td>'
+		# Date
 		crimeTable += '<td>' + onCampusArray[i + 1] + '</td>'
+		# Report Number
 		crimeTable += '<td>' + onCampusArray[i + 2] + '</td>'
+		# Incident Type
 		crimeTable += '<td>' + onCampusArray[i + 3] + '</td>'
+		# Location
 		crimeTable += '<td>' + onCampusArray[i + 4] + '</td>'
+		# Descriptions
 		crimeTable += '</tr>'
 	
 		i += 5

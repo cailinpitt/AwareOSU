@@ -114,7 +114,7 @@ else
 		else
 			mapURL += "%7C" + location + "+Columbus+Ohio"
 		end
-		# Clean up location to make it suitable for testing
+		# Clean up location to make it suitable for Google Maps
 		
 		i += 5
 		linkIndex += 1
@@ -176,9 +176,9 @@ else
 		location.delete!("&")
 		
 		if location.include? " "
-			mapURL += "%7C" + location.gsub!(/\s+/, '+') + "+Ohio+State+University"
+			mapURL += "%7C" + location.gsub!(/\s+/, '+') + "+Ohio+State+University+columbus+ohio"
 		else
-			mapURL += "%7C" + location + "+Ohio+State+University"
+			mapURL += "%7C" + location + "+Ohio+State+University+columbus+ohio"
 		end
 		# Clean up location to make it suitable for searching
 		
