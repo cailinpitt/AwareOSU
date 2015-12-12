@@ -78,11 +78,13 @@ if !File.exist? "/home/pi/Documents/AwareOSU/oncampus.txt"
 end
 # If files do not exist, we need to create them
 
+offCampus = File.open("/home/pi/Documents/AwareOSU/offcampus.txt", "a")
+
 if !products.text.to_s.eql? "Your search produced no records."
 	# Crimes have occured :(
 	# Parse HTML to get crimes, save in textfile.
 
-	offCampus = File.open("/home/pi/Documents/AwareOSU/offcampus.txt", "a")
+
 	# Open off-campus file to dump information into.  
 	
 	crimeTable = resultPage.css("table[class='mGrid']")
@@ -127,9 +129,16 @@ if !products.text.to_s.eql? "Your search produced no records."
 	# Until I figure out how to deal with pagination, we will only return the first 29 crimes.
 	# We rarely have more than 29 crimes, so this is a rare case, however it's something I still want to take care of.
 
-	offCampus.close
-	# Close off-campus text file.
+else
+	offCampus.puts yesterdayWithDay
+	offCampus.puts "-"
+	offCampus.puts "-"
+	offCampus.puts "-"
+	offCampus.puts "No off-campus crimes reported for #{yesterdayWithDay}"
+	# Report that there were no off-campus crimes for this date
 end
+offCampus.close
+# Close off-campus text file.
 
 onCampus = File.open("/home/pi/Documents/AwareOSU/oncampus.txt", "a")
 # Open file to dump on-campus information into
@@ -155,6 +164,13 @@ i = 0
 		
 		i += 8
 	end
+else
+	onCampus.puts yesterdayWithDay
+	onCampus.puts "-"
+	onCampus.puts "-"
+	onCampus.puts "-"
+	onCampus.puts "No on-campus crimes reported for #{yesterdayWithDay}"
+	# Report that there were no on-campus crimes for this date
 end
 onCampus.close
 # Close onCampus connection
