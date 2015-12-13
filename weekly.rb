@@ -27,22 +27,6 @@ agent.read_timeout = 60
 agent.user_agent_alias = "Mac Safari" 
 # Chose Safari because I like Macs
 
-page = agent.get "http://www.columbuspolice.org/reports/SearchLocation?loc=zon4"
-# Direct to Columbus PD report website
-
-search_form = page.form_with :id => "ctl01"
-search_form.field_with(:name => "ctl00$MainContent$startdate").value = yesterday
-search_form.field_with(:name => "ctl00$MainContent$enddate").value = yesterday
-# Tell website we want to search for all crimes in zone 4 that occurred yesterday
-
-button = search_form.button_with(:type => "submit")
-# Get submit button in order to submit search
-
-search_results = agent.submit(search_form, button)
-# Page containing the information we want to sift through.
-
-# search_results contains off-campus crime information. Time to use Nokogiri!
-
 passArray = IO.readlines('/home/pi/Documents/p')
 
 options = {	:address      				=> "smtp.gmail.com",
@@ -57,16 +41,6 @@ Mail.defaults do
 end
 # Set up mail options, authenticate
 
-resultPage = Nokogiri::HTML(search_results.body)
-products = resultPage.css("span[class='ErrorLabel']")
-# We use this span class to figure out if there are crimes for the specified date or not.
-
-crimeHTML = ""
-mapURL = ""
-crimeTable = ""
-crimeNum = 0
-# Declare variables
-
 if !File.exist? "/home/pi/Documents/AwareOSU/offcampus.txt"
 	offCampus = File.open("/home/pi/Documents/AwareOSU/offcampus.txt", "w")
 	offCampus.close
@@ -79,63 +53,108 @@ end
 # If files do not exist, we need to create them
 
 offCampus = File.open("/home/pi/Documents/AwareOSU/offcampus.txt", "a")
+# Open off campus text file
 
-if !products.text.to_s.eql? "Your search produced no records."
-	# Crimes have occured :(
-	# Parse HTML to get crimes, save in textfile.
+retries = 2
+# If website is down, we'll retry visiting it twice.
 
-
-	# Open off-campus file to dump information into.  
-	
-	crimeTable = resultPage.css("table[class='mGrid']")
-	crimeInfo = crimeTable.css('td')
-	crimeReportNumbers = crimeTable.css('tr')
-	# Get crime information
-	crimeNum = crimeInfo.length
-	
-	crimeTableInfo = ""
-	# Set up variables to hold crime information
-	
-	i = 0
-	j = 0;
-	linkIndex = 1;
-	# Counters decared
-	
-	while ((i < crimeNum) && (i < 145)) do
-		report = '';
-		for j in 11...crimeReportNumbers[linkIndex]["onclick"].length - 1
-			char = '' + crimeReportNumbers[linkIndex]["onclick"][j]
-			report += char
-		end
-		# This loop takes care of setting up the links to each individual crime's page, where more information is listed.
-		
+begin
+	page = agent.get "http://www.columbuspolice.org/reports/SearchLocation?loc=zon4"
+	# Try to direct to Columbus PD report website
+rescue
+	if retries > 0
+		retries -= 1
+		sleep 2
+		retry
+	else
 		offCampus.puts yesterdayWithDay
-		offCampus.puts crimeInfo[i].text
-		offCampus.puts crimeInfo[i + 1].text
-		offCampus.puts crimeInfo[i + 4].text
-		offCampus.puts 'http://www.columbuspolice.org/reports/PublicReport?caseID=' + report
-		# Dump off-campus information into textfile.
-		
-		i += 5
-		linkIndex += 1
-		# Insert information into table
+		offCampus.puts "-"
+		offCampus.puts "-"
+		offCampus.puts "-"
+		offCampus.puts "Columbus PD website was down on #{yesterdayWithDay}. Unable to retrieve crimes."
+		# Report that there were no off-campus crimes for this date
+		# Else, write that website was down, move on to on-campus crimes
 	end
-	# Done getting off-campus info for the day
-	
-	# Crimes are retrieved from a table seperated by pages. Each page holds 29 crimes.
-	# JavaScript is used for pagination, and since Mechanize/Nokogiri cannot interact with JS (only HTML),
-	# the program can only retrieve the first 29 crimes (hence i < 145 [Each crime has 5 fields, 5 * 29 = 145])
-
-	# Until I figure out how to deal with pagination, we will only return the first 29 crimes.
-	# We rarely have more than 29 crimes, so this is a rare case, however it's something I still want to take care of.
-
+	# If loading Columbus PD website fails, try one more time
 else
-	offCampus.puts yesterdayWithDay
-	offCampus.puts "-"
-	offCampus.puts "-"
-	offCampus.puts "-"
-	offCampus.puts "No off-campus crimes reported for #{yesterdayWithDay}"
-	# Report that there were no off-campus crimes for this date
+	# Else it loaded, continue with execution of script
+	search_form = page.form_with :id => "ctl01"
+	search_form.field_with(:name => "ctl00$MainContent$startdate").value = yesterday
+	search_form.field_with(:name => "ctl00$MainContent$enddate").value = yesterday
+	# Tell website we want to search for all crimes in zone 4 that occurred yesterday
+
+	button = search_form.button_with(:type => "submit")
+	# Get submit button in order to submit search
+
+	search_results = agent.submit(search_form, button)
+	# Page containing the information we want to sift through.
+
+	# search_results contains off-campus crime information. Time to use Nokogiri!
+
+	resultPage = Nokogiri::HTML(search_results.body)
+	products = resultPage.css("span[class='ErrorLabel']")
+	# We use this span class to figure out if there are crimes for the specified date or not.
+
+	crimeHTML = ""
+	mapURL = ""
+	crimeTable = ""
+	crimeNum = 0
+	# Declare variables
+
+	if !products.text.to_s.eql? "Your search produced no records."
+		# Crimes have occured :(
+		# Parse HTML to get crimes, save in textfile.
+	
+		crimeTable = resultPage.css("table[class='mGrid']")
+		crimeInfo = crimeTable.css('td')
+		crimeReportNumbers = crimeTable.css('tr')
+		# Get crime information
+		crimeNum = crimeInfo.length
+	
+		crimeTableInfo = ""
+		# Set up variables to hold crime information
+	
+		i = 0
+		j = 0;
+		linkIndex = 1;
+		# Counters decared
+	
+		while ((i < crimeNum) && (i < 145)) do
+			report = '';
+			for j in 11...crimeReportNumbers[linkIndex]["onclick"].length - 1
+				char = '' + crimeReportNumbers[linkIndex]["onclick"][j]
+				report += char
+			end
+			# This loop takes care of setting up the links to each individual crime's page, where more information is listed.
+		
+			offCampus.puts yesterdayWithDay
+			offCampus.puts crimeInfo[i].text
+			offCampus.puts crimeInfo[i + 1].text
+			offCampus.puts crimeInfo[i + 4].text
+			offCampus.puts 'http://www.columbuspolice.org/reports/PublicReport?caseID=' + report
+			# Dump off-campus information into textfile.
+		
+			i += 5
+			linkIndex += 1
+			# Insert information into table
+		end
+		# Done getting off-campus info for the day
+	
+		# Crimes are retrieved from a table seperated by pages. Each page holds 29 crimes.
+		# JavaScript is used for pagination, and since Mechanize/Nokogiri cannot interact with JS (only HTML),
+		# the program can only retrieve the first 29 crimes (hence i < 145 [Each crime has 5 fields, 5 * 29 = 145])
+
+		# Until I figure out how to deal with pagination, we will only return the first 29 crimes.
+		# We rarely have more than 29 crimes, so this is a rare case, however it's something I still want to take care of.
+
+	else
+		offCampus.puts yesterdayWithDay
+		offCampus.puts "-"
+		offCampus.puts "-"
+		offCampus.puts "-"
+		offCampus.puts "No off-campus crimes reported for #{yesterdayWithDay}"
+		# Report that there were no off-campus crimes for this date
+	end
 end
 offCampus.close
 # Close off-campus text file.
