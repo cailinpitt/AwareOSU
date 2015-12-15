@@ -29,12 +29,12 @@ agent.user_agent_alias = "Mac Safari"
 
 passArray = IO.readlines('/home/pi/Documents/p')
 
-options = {	:address      				=> "smtp.gmail.com",
-          	:port                 => 587,
-          	:user_name            => 'awareosu',
-          	:password             => passArray[0].delete!("\n"),
-          	:authentication       => 'plain',
-          	:enable_starttls_auto => true  }
+options = {	:address      									=> "smtp.gmail.com",
+          					:port		                  					=> 587,
+          					:user_name        					=> 'awareosu',
+								  	:password          						=> passArray[0].delete!("\n"),
+								  	:authentication  					=> 'plain',
+								  	:enable_starttls_auto	=> true  }
 
 Mail.defaults do
   delivery_method :smtp, options
@@ -71,7 +71,7 @@ rescue
 		offCampus.puts "-"
 		offCampus.puts "-"
 		offCampus.puts "-"
-		offCampus.puts "Columbus PD website was down on #{yesterdayWithDay}. Unable to retrieve crimes."
+		offCampus.puts "Columbus PD website was down, unable to retrieve crimes for #{yesterdayWithDay}."
 		# Report that there were no off-campus crimes for this date
 		# Else, write that website was down, move on to on-campus crimes
 	end

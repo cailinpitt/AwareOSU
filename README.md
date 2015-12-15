@@ -5,7 +5,7 @@ Be aware of crimes around the campus area.
 OSU students (well, college students in general) enjoy being safe. Whenever a crime occurs on campus that has a continuing safety threat, OSU sends every student and staff an email briefly explaining the crime. However, OSU doesn't send crime alerts for all crimes that occur *on and around* campus (where many students live). The reality is that we live in a dangerous world, and we want to be aware of what is happening around us.
 
 # Features
-Program runs once every day (using a CRON job), webscrapes the [Columbus Police Department's unofficial web report portal](http://www.columbuspolice.org/reports/) (to find all crimes committed in zone 4, more on zone 4 later) and the [OSU Police department's daily log system](http://www.ps.ohio-state.edu/police/daily_log/view.php?date=yesterday), finds the previous days crimes, and emails the list of crimes to a Google Group of users who signed up for the mailing list.
+Program runs once every day (using a CRON job), webscrapes the [Columbus Police Department's unofficial web report portal](http://www.columbuspolice.org/reports/) (to find all crimes committed in zone 4, more on zone 4 later) and the [OSU Police department's daily log system](http://www.ps.ohio-state.edu/police/daily_log/view.php?date=yesterday), finds the previous days crimes, and emails the list of crimes to a Google Group of users who signed up for the service.
 
 # Great overview. What is the code actually doing?
 This Ruby program utilizes three great gems, Mechanize, Nokogiri, and Mail. This program visits the CPD web portal and OSU PD online log system (listed above) using Mechanize, parses the HTML of the search page containing all crimes committed yesterday using Nokogiri, and sends the information out in a HTML table using Mail.
@@ -42,13 +42,15 @@ Currently, victim names aren't included in the digest. Even though this is publi
 My Pi sometimes runs into an issue where it has trouble staying connected to the Internet while using an ethernet connection. It will say that it has a connection, but in actuality I cannot access the internet. This seems to be a semi-common problem among Pis, and this also causes problems for AwareOSU since it can't access the internet if there isn't a connection. This script resets the ethernet connection every morning one minute before AwareOSU is scheduled to run, ensuring that the Pi has a valid, working internet connection.
 
 # Goals
-1. Develop Ruby on Rails web application containing a history of past crimes, with Google Maps showing crime locations.
+1. Develop AwareOSU mobile applications for Android and iOS.
 
 # How to sign up
-Visit the [AwareOSU Google form](http://goo.gl/forms/Oy5kZ4xHbX) to sign-up.
+Visit the [AwareOSU Google form](http://goo.gl/forms/Oy5kZ4xHbX) to sign-up for either a daily or weekly delivery option.
 
 # Milestones
-* 12/3/2015 - AwareOSU has 700 users.
+* 12/10/2015 - AwareOSU now has a weekly delivery option, in addition to a daily delivery options.
+
+* 12/03/2015 - AwareOSU has 700 users.
 
 * 12/01/2015 - AwareOSU now includes static Google Maps so users can visualize where crimes occurred.
 
