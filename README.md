@@ -48,7 +48,7 @@ My Pi sometimes runs into an issue where it has trouble staying connected to the
 Visit the [AwareOSU Google form](http://goo.gl/forms/Oy5kZ4xHbX) to sign-up for either a daily or weekly delivery option.
 
 # Milestones
-* 12/10/2015 - AwareOSU now has a weekly delivery option, in addition to a daily delivery options.
+* 12/10/2015 - AwareOSU now has a weekly delivery option, in addition to a daily delivery option.
 
 * 12/03/2015 - AwareOSU has 700 users.
 
