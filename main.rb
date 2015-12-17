@@ -26,21 +26,8 @@ agent.read_timeout = 60
 agent.user_agent_alias = "Mac Safari" 
 # Chose Safari because I like Macs
 
-page = agent.get "http://www.columbuspolice.org/reports/SearchLocation?loc=zon4"
-# Direct to Columbus PD report website
-
-search_form = page.form_with :id => "ctl01"
-search_form.field_with(:name => "ctl00$MainContent$startdate").value = yesterday
-search_form.field_with(:name => "ctl00$MainContent$enddate").value = yesterday
-# Tell website we want to search for all crimes in zone 4 that occurred yesterday
-
-button = search_form.button_with(:type => "submit")
-# Get submit button in order to submit search
-
-search_results = agent.submit(search_form, button)
-# Page containing the information we want to sift through.
-
-# search_results contains off-campus crime information. Time to use Nokogiri!
+crimeHTML = ""
+# Declare variable to hold crime information
 
 passArray = IO.readlines('/home/pi/Documents/p')
 
@@ -56,81 +43,115 @@ Mail.defaults do
 end
 # Set up mail options, authenticate
 
-resultPage = Nokogiri::HTML(search_results.body)
-products = resultPage.css("span[class='ErrorLabel']")
-# We use this span class to figure out if there are crimes for the specified date or not.
+retries = 3
+# If website is down, we'll retry visiting it three times.
 
-crimeHTML = ""
-mapURL = ""
-crimeTable = ""
-crimeNum = 0
-# Declare variables
-
-if products.text.to_s.eql? "Your search produced no records."
-	crimeHTML += "<h1>0 Off-campus crimes for #{yesterdayWithDay}</h1>"
-	crimeHTML += '<p>This is either due to no crimes occuring off-campus, or the Columbus Police Department forgetting to upload crime information.</p><p>Please be sure to check <a href="http://www.columbuspolice.org/reports/SearchLocation?loc=zon4">the CPD web portal</a> later today or tomorrow for any updates.</p>'
-	# Case where there aren't any crimes for zone 4 on the CPD web portal.
-	# Most likely due to program running before crimes have been uploaded to CPD web portal or CPD forgetting to upload crimes (which did happen on 10/26/2015).
-	
-else
-	# Else, crimes have occured :(
-	# Parse HTML to get crimes, send to email list.
-
-	crimeTable = resultPage.css("table[class='mGrid']")
-	crimeInfo = crimeTable.css('td')
-	crimeReportNumbers = crimeTable.css('tr')
-	# Get crime information
-	mapURL = "<img src = 'https://maps.googleapis.com/maps/api/staticmap?zoom=12&center=the+ohio+state+university&size=370x330&scale=2&maptype=roadmap&markers=color:blue%7Clabel:"
-	crimeNum = crimeInfo.length
-	crimeHTML += "<h1>#{crimeNum/5} Off-campus crimes for #{yesterdayWithDay}</h1>"
-	crimeTableInfo = ""
-	# Set up table for information
-	
-	i = 0
-	j = 0;
-	linkIndex = 1;
-	# Counters decared
-	
-	while ((i < crimeNum) && (i < 145)) do
-		report = '';
-		for j in 11...crimeReportNumbers[linkIndex]["onclick"].length - 1
-			char = '' + crimeReportNumbers[linkIndex]["onclick"][j]
-			report += char
-		end
-		# This loop takes care of setting up the links to each individual crime's page, where more information is listed.
-		
-		crimeTableInfo += '<tr>'
-		crimeTableInfo += '<td>' + crimeInfo[i].text + '</td>'
-		crimeTableInfo += '<td>' + crimeInfo[i + 1].text + '</td>'
-		crimeTableInfo += '<td>' + crimeInfo[i + 4].text + '</td>'
-		crimeTableInfo += '<td>' + 'http://www.columbuspolice.org/reports/PublicReport?caseID=' + report + '</td>'
-		crimeTableInfo += '</tr>'
-		
-		location = crimeInfo[i + 4].text
-		location.delete!("&")
-		
-		if location.include? " "
-			mapURL += "%7C" + location.gsub!(/\s+/, '+') + "+Columbus+Ohio"
-		else
-			mapURL += "%7C" + location + "+Columbus+Ohio"
-		end
-		# Clean up location to make it suitable for Google Maps
-		
-		i += 5
-		linkIndex += 1
-		# Insert information into table
+begin
+	page = agent.get "http://www.columbuspolice.org/reports/SearchLocation?loc=zon4"
+	# Try to direct to Columbus PD report website
+rescue
+	if retries > 0
+		retries -= 1
+		sleep 5
+		retry
+	else
+		crimeHTML += "<h1>0 Off-campus crimes for #{yesterdayWithDay} - Website Down</h1>"
+		crimeHTML += '<p>The Columbus Police Department\'s website is currently down.</p><p>Please be sure to check <a href="http://www.columbuspolice.org/reports/SearchLocation?loc=zon4">the CPD web portal</a> later today or tomorrow for any updates.</p>'
+		# Report that there were no off-campus crimes for this date
+		# Else, write that website was down, move on to on-campus crimes
 	end
-	mapURL += "&maptype=terrain&key=" + passArray[1].delete!("\n")
-	# End table
-	
-	# Crimes are retrieved from a table seperated by pages. Each page holds 29 crimes.
-	# JavaScript is used for pagination, and since Mechanize/Nokogiri cannot interact with JS (only HTML),
-	# the program can only retrieve the first 29 crimes (hence i < 145 [Each crime has 5 fields, 5 * 29 = 145])
+	# If loading Columbus PD website fails, try two more times
+else
+	# Else it loaded, continue with execution of script
 
-	# Until I figure out how to deal with pagination, we will only return the first 29 crimes.
-	# We rarely have more than 29 crimes, so this is a rare case, however it's something I still want to take care of.
+	search_form = page.form_with :id => "ctl01"
+	search_form.field_with(:name => "ctl00$MainContent$startdate").value = yesterday
+	search_form.field_with(:name => "ctl00$MainContent$enddate").value = yesterday
+	# Tell website we want to search for all crimes in zone 4 that occurred yesterday
+
+	button = search_form.button_with(:type => "submit")
+	# Get submit button in order to submit search
+
+	search_results = agent.submit(search_form, button)
+	# Page containing the information we want to sift through.
+
+	# search_results contains off-campus crime information. Time to use Nokogiri!
+
+	resultPage = Nokogiri::HTML(search_results.body)
+	products = resultPage.css("span[class='ErrorLabel']")
+	# We use this span class to figure out if there are crimes for the specified date or not.
+
+	mapURL = ""
+	crimeTable = ""
+	crimeNum = 0
+	# Declare variables
+
+	if products.text.to_s.eql? "Your search produced no records."
+		crimeHTML += "<h1>0 Off-campus crimes for #{yesterdayWithDay}</h1>"
+		crimeHTML += '<p>This is either due to no crimes occuring off-campus, or the Columbus Police Department forgetting to upload crime information.</p><p>Please be sure to check <a href="http://www.columbuspolice.org/reports/SearchLocation?loc=zon4">the CPD web portal</a> later today or tomorrow for any updates.</p>'
+		# Case where there aren't any crimes for zone 4 on the CPD web portal.
+		# Most likely due to program running before crimes have been uploaded to CPD web portal or CPD forgetting to upload crimes (which did happen on 10/26/2015).
+	
+	else
+		# Else, crimes have occured :(
+		# Parse HTML to get crimes, send to email list.
+
+		crimeTable = resultPage.css("table[class='mGrid']")
+		crimeInfo = crimeTable.css('td')
+		crimeReportNumbers = crimeTable.css('tr')
+		# Get crime information
+		mapURL = "<img src = 'https://maps.googleapis.com/maps/api/staticmap?zoom=12&center=the+ohio+state+university&size=370x330&scale=2&maptype=roadmap&markers=color:blue%7Clabel:"
+		crimeNum = crimeInfo.length
+		crimeHTML += "<h1>#{crimeNum/5} Off-campus crimes for #{yesterdayWithDay}</h1>"
+		crimeTableInfo = ""
+		# Set up table for information
+	
+		i = 0
+		j = 0;
+		linkIndex = 1;
+		# Counters decared
+	
+		while ((i < crimeNum) && (i < 145)) do
+			report = '';
+			for j in 11...crimeReportNumbers[linkIndex]["onclick"].length - 1
+				char = '' + crimeReportNumbers[linkIndex]["onclick"][j]
+				report += char
+			end
+			# This loop takes care of setting up the links to each individual crime's page, where more information is listed.
+		
+			crimeTableInfo += '<tr>'
+			crimeTableInfo += '<td>' + crimeInfo[i].text + '</td>'
+			crimeTableInfo += '<td>' + crimeInfo[i + 1].text + '</td>'
+			crimeTableInfo += '<td>' + crimeInfo[i + 4].text + '</td>'
+			crimeTableInfo += '<td>' + 'http://www.columbuspolice.org/reports/PublicReport?caseID=' + report + '</td>'
+			crimeTableInfo += '</tr>'
+		
+			location = crimeInfo[i + 4].text
+			location.delete!("&")
+		
+			if location.include? " "
+				mapURL += "%7C" + location.gsub!(/\s+/, '+') + "+Columbus+Ohio"
+			else
+				mapURL += "%7C" + location + "+Columbus+Ohio"
+			end
+			# Clean up location to make it suitable for Google Maps
+		
+			i += 5
+			linkIndex += 1
+			# Insert information into table
+		end
+		mapURL += "&maptype=terrain&key=" + passArray[1].delete!("\n")
+		# End table
+	
+		# Crimes are retrieved from a table seperated by pages. Each page holds 29 crimes.
+		# JavaScript is used for pagination, and since Mechanize/Nokogiri cannot interact with JS (only HTML),
+		# the program can only retrieve the first 29 crimes (hence i < 145 [Each crime has 5 fields, 5 * 29 = 145])
+
+		# Until I figure out how to deal with pagination, we will only return the first 29 crimes.
+		# We rarely have more than 29 crimes, so this is a rare case, however it's something I still want to take care of.
 	
 	
+	end
 end
 crimeHTML += mapURL
 

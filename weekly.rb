@@ -55,8 +55,8 @@ end
 offCampus = File.open("/home/pi/Documents/AwareOSU/offcampus.txt", "a")
 # Open off campus text file
 
-retries = 2
-# If website is down, we'll retry visiting it twice.
+retries = 3
+# If website is down, we'll retry visiting it three times.
 
 begin
 	page = agent.get "http://www.columbuspolice.org/reports/SearchLocation?loc=zon4"
@@ -64,7 +64,7 @@ begin
 rescue
 	if retries > 0
 		retries -= 1
-		sleep 2
+		sleep 5
 		retry
 	else
 		offCampus.puts yesterdayWithDay
