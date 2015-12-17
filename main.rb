@@ -46,6 +46,9 @@ end
 retries = 3
 # If website is down, we'll retry visiting it three times.
 
+mapURL = ""
+crimeNum = 0
+
 begin
 	page = agent.get "http://www.columbuspolice.org/reports/SearchLocation?loc=zon4"
 	# Try to direct to Columbus PD report website
@@ -81,7 +84,6 @@ else
 	products = resultPage.css("span[class='ErrorLabel']")
 	# We use this span class to figure out if there are crimes for the specified date or not.
 
-	mapURL = ""
 	crimeTable = ""
 	crimeNum = 0
 	# Declare variables
@@ -100,7 +102,7 @@ else
 		crimeInfo = crimeTable.css('td')
 		crimeReportNumbers = crimeTable.css('tr')
 		# Get crime information
-		mapURL = "<img src = 'https://maps.googleapis.com/maps/api/staticmap?zoom=12&center=the+ohio+state+university&size=370x330&scale=2&maptype=roadmap&markers=color:blue%7Clabel:"
+		mapURL += "<img src = 'https://maps.googleapis.com/maps/api/staticmap?zoom=12&center=the+ohio+state+university&size=370x330&scale=2&maptype=roadmap&markers=color:blue%7Clabel:"
 		crimeNum = crimeInfo.length
 		crimeHTML += "<h1>#{crimeNum/5} Off-campus crimes for #{yesterdayWithDay}</h1>"
 		crimeTableInfo = ""
