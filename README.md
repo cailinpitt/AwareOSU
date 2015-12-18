@@ -43,6 +43,7 @@ My Pi sometimes runs into an issue where it has trouble staying connected to the
 
 # Goals
 1. Develop AwareOSU mobile applications for Android and iOS.
+  * Development of AwareOSU Android has begun. Follow along [here](https://github.com/CailinPitt/AwareOSUAndroid).
 
 # How to sign up
 Visit the [AwareOSU Google form](http://goo.gl/forms/Oy5kZ4xHbX) to sign-up for either a daily or weekly delivery option.
