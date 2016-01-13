@@ -49,9 +49,9 @@ My Pi sometimes runs into an issue where it has trouble staying connected to the
 Visit the [AwareOSU Google form](http://goo.gl/forms/Oy5kZ4xHbX) to sign-up for either a daily or weekly delivery option.
 
 # Milestones
-* 01/09/2016 - [AwareOSU has been released](https://play.google.com/store/apps/details?id=awareosu.example.cailin.awareosu).
+* 01/09/2016 - [AwareOSU for Android is released](https://play.google.com/store/apps/details?id=awareosu.example.cailin.awareosu).
 
-* 12/18/2015 - [Development of AwareOSU Android has begun](https://github.com/CailinPitt/AwareOSUAndroid).
+* 12/18/2015 - [Development of AwareOSU for Android begins](https://github.com/CailinPitt/AwareOSUAndroid).
 
 * 12/10/2015 - AwareOSU now has a weekly delivery option, in addition to a daily delivery option.
 
