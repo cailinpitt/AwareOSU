@@ -80,6 +80,7 @@ Visit the [AwareOSU Google form](http://goo.gl/forms/Oy5kZ4xHbX) to sign-up for 
 * 10/16/2015 - AwareOSU is released.
 
 # Press
+* [1870 Magazine](http://1870now.com/safe-and-sound-osu-student-designs-crime-notification-service/)
 * [The Lantern](http://thelantern.com/2015/12/ohio-state-student-creates-crime-awareness-email-service/)
 * [NBC4](http://nbc4i.com/2015/11/24/osu-student-creates-computer-program-to-track-crimes-in-and-around-campus/)
 * [The Columbus Dispatch](http://www.dispatch.com/content/stories/local/2015/11/24/app-gathers-osu-area-cop-reports.html)
