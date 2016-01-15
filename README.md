@@ -49,9 +49,9 @@ My Pi sometimes runs into an issue where it has trouble staying connected to the
 Visit the [AwareOSU Google form](http://goo.gl/forms/Oy5kZ4xHbX) to sign-up for either a daily or weekly delivery option.
 
 # Milestones
-* 01/09/2016 - [AwareOSU has been released](https://play.google.com/store/apps/details?id=awareosu.example.cailin.awareosu).
+* 01/09/2016 - [AwareOSU for Android is released](https://play.google.com/store/apps/details?id=awareosu.example.cailin.awareosu).
 
-* 12/18/2015 - [Development of AwareOSU Android has begun](https://github.com/CailinPitt/AwareOSUAndroid).
+* 12/18/2015 - [Development of AwareOSU for Android begins](https://github.com/CailinPitt/AwareOSUAndroid).
 
 * 12/10/2015 - AwareOSU now has a weekly delivery option, in addition to a daily delivery option.
 
@@ -80,6 +80,7 @@ Visit the [AwareOSU Google form](http://goo.gl/forms/Oy5kZ4xHbX) to sign-up for 
 * 10/16/2015 - AwareOSU is released.
 
 # Press
+* [1870 Magazine](http://1870now.com/safe-and-sound-osu-student-designs-crime-notification-service/)
 * [The Lantern](http://thelantern.com/2015/12/ohio-state-student-creates-crime-awareness-email-service/)
 * [NBC4](http://nbc4i.com/2015/11/24/osu-student-creates-computer-program-to-track-crimes-in-and-around-campus/)
 * [The Columbus Dispatch](http://www.dispatch.com/content/stories/local/2015/11/24/app-gathers-osu-area-cop-reports.html)
