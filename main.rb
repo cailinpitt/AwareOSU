@@ -43,19 +43,26 @@ Mail.defaults do
 end
 # Set up mail options, authenticate
 
-websiteURL = "http://www.columbuspolice.org/reports/Results?from=datePlaceholder&to=datePlaceholder&loc=locationPlaceholder&types=9"
 districtArray = [ 'dis33', 'dis30', 'dis34', 'dis53', 'dis50', 'dis43', 'dis40', 'dis41', 'dis42', 'dis44' ]
 # This array contains the districts we want to get crime info from
 
+key = passArray[1].delete!("\n")
+crimeTableInfo = ""
+websiteDown = false
 retries = 3
 # If website is down, we'll retry visiting it three times.
 
 crimeNumTotal = 0
 mapURL = "<img src = 'https://maps.googleapis.com/maps/api/staticmap?zoom=12&center=the+ohio+state+university&size=370x330&scale=2&maptype=roadmap&markers=color:blue%7Clabel:"
+
 for i in 0...districtArray.length
+	sleep 4
+	# Sleep so we aren't persistently bothering the CPD website
 	begin
-		puts websiteURL.gsub!('datePlaceholder', yesterday).gsub!('locationPlaceholder', districtArray[i])
-		page = agent.get websiteURL.gsub!('datePlaceholder', yesterday).gsub!('locationPlaceholder', districtArray[i])
+		websiteURL = "http://www.columbuspolice.org/reports/Results?from=datePlaceholder&to=datePlaceholder&loc=locationPlaceholder&types=9"
+		websiteURL.gsub!('datePlaceholder', yesterday).gsub!('locationPlaceholder', districtArray[i])
+		# Insert search info into URL
+		page = agent.get websiteURL
 		# Try to direct to Columbus PD report website
 	rescue
 		if retries > 0
@@ -63,10 +70,10 @@ for i in 0...districtArray.length
 			sleep 5
 			retry
 		else
+			websiteDown = true
 			crimeHTML += "<h1>0 Off-campus crimes for #{yesterdayWithDay} - Website Down</h1>"
 			crimeHTML += '<p>The Columbus Police Department\'s website is currently down.</p><p>Please be sure to check <a href="http://www.columbuspolice.org/reports/SearchLocation">the CPD web portal</a> later today or tomorrow for any updates.</p>'
-			
-			i = districtArray.length
+			break
 			# Report that there were no off-campus crimes for this date
 			# Else, write that website was down, move on to on-campus crimes
 		end
@@ -80,11 +87,10 @@ for i in 0...districtArray.length
 		products = resultPage.css("span[class='ErrorLabel']")
 		# We use this span class to figure out if there are crimes for the specified date or not.
 		
-		if products.text.to_s.eql? "Your search produced no records."
+		if !products.text.to_s.eql? "Your search produced no records."
 			crimeTable = ""
 			crimeNum = 0
 			# Declare variables
-
 			# Parse HTML to get crimes, send to email list.
 
 			crimeTable = resultPage.css("table[class='mGrid']")
@@ -94,7 +100,6 @@ for i in 0...districtArray.length
 			
 			crimeNum = crimeInfo.length
 			crimeNumTotal += crimeNum / 5
-			crimeTableInfo = ""
 			# Set up table for information
 
 			i = 0
@@ -131,7 +136,6 @@ for i in 0...districtArray.length
 				linkIndex += 1
 				# Insert information into table
 			end
-			mapURL += "&maptype=terrain&key=" + passArray[1].delete!("\n")
 			# End table
 
 			# Crimes are retrieved from a table seperated by pages. Each page holds 29 crimes.
@@ -146,15 +150,18 @@ end
 
 if crimeNumTotal > 0
 	# Add information to result if there were off-campus crimes
+	mapURL += "&maptype=terrain&key=" + key
 	crimeHTML += mapURL
 	crimeHTML += "<h1>#{crimeNumTotal} Off-campus crimes for #{yesterdayWithDay}</h1>"
 	crimeHTML += '<table style="width:80%;text-align: left;" cellpadding="10"><tbody><tr><th>CRNumber</th><th>Description</th><th>Location</th><th>Link</th></tr>'
 	crimeHTML += crimeTableInfo
-	crimeHTML += '</tbody></table>'
-else
+	crimeHTML += '</tbody></table><p><a href="http://cailinpitt.github.io/AwareOSU/definitions#off">Confused about the meaning of a crime?</a></p>'
+elsif  ((crimeNumTotal == 0) && (websiteDown == false))
 	# No crimes reported for the day we searched
-	
+	crimeHTML += "<h1>0 Off-campus crimes for #{yesterdayWithDay}</h1>"
+	crimeHTML += '<p>This is either due to no crimes occuring off-campus, or the Columbus Police Department forgetting to upload crime information.</p><p>Please be sure to check <a href="http://www.columbuspolice.org/reports/SearchLocation">the CPD web portal</a> later today or tomorrow for any updates.</p>'
 end
+
 page = agent.get "http://www.ps.ohio-state.edu/police/daily_log/view.php?date=yesterday"
 campusPage = Nokogiri::HTML(page.body)
 crimeTable = campusPage.css("table[width='680']")
@@ -199,15 +206,15 @@ else
 		i += 8
 	end
 	# Insert on-campus crime information into table
-	mapURL += "&maptype=terrain&key=" + passArray[1]
+	mapURL += "&maptype=terrain&key=" + key
 	crimeHTML += mapURL
 	crimeHTML += crimeTable
-	crimeHTML += '</tbody></table>'
+	crimeHTML += '</tbody></table><p><a href="http://cailinpitt.github.io/AwareOSU/definitions#on">Confused about the meaning of a crime?</a></p>'
 	# End table
 end
 
 Mail.deliver do
-	to 'cailinpitt1@gmail.com' #'awareosulist@googlegroups.com'
+	to 'awareosulist@googlegroups.com'
 	from 'awareosu@gmail.com'
 	subject "AwareOSU - #{yesterdayWithDay}"
 
