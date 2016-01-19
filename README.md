@@ -1,5 +1,8 @@
-# [AwareOSU](http://cailinpitt.github.io/AwareOSU/)
-Be aware of crimes around the campus area.
+<p align="center">
+ <a href = "http://cailinpitt.github.io/AwareOSU/">
+  <img src = "https://raw.githubusercontent.com/CailinPitt/AwareOSUAndroid/master/Images/AwareOSULogo.png" alt = "Logo" title = "Main site" />
+ </a>
+</p>
 
 # Background
 OSU students (well, college students in general) enjoy being safe. Whenever a crime occurs on campus that has a continuing safety threat, OSU sends every student and staff an email briefly explaining the crime. However, OSU doesn't send crime alerts for all crimes that occur *on and around* campus (where many students live). The reality is that we live in a dangerous world, and we want to be aware of what is happening around us.
