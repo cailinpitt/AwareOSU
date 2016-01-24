@@ -166,7 +166,7 @@ websiteDown = false
 retries = 3
 
 begin
-	page = agent.get "hhttp://dps-web-01.busfin.ohio-state.edu/police/daily_log_2/view.php?date=yesterday"
+	page = agent.get "http://dps-web-01.busfin.ohio-state.edu/police/daily_log_2/view.php?date=yesterday"
 rescue
 	if retries > 0
 		retries -= 1
