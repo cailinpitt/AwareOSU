@@ -163,9 +163,9 @@ offCampus.close
 onCampus = File.open("/home/pi/Documents/AwareOSU/oncampus.txt", "a")
 # Open file to dump on-campus information into
 
-page = agent.get "http://www.ps.ohio-state.edu/police/daily_log/view.php?date=yesterday"
+page = agent.get "http://dps-web-01.busfin.ohio-state.edu/police/daily_log_2/view.php?date=yesterday"
 campusPage = Nokogiri::HTML(page.body)
-crimeTable = campusPage.css("table[width='680']")
+crimeTable = campusPage.css("table[class='log']")
 crimesFromTable = crimeTable.css("td[class='log']")
 numberOfOSUCrimes = crimesFromTable.length/8
 # Visit OSU PD's web log, get number of crimes committed on campus the previous day
