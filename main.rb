@@ -162,57 +162,75 @@ elsif  ((crimeNumTotal == 0) && (websiteDown == false))
 	crimeHTML += '<p>This is either due to no crimes occuring off-campus, or the Columbus Police Department forgetting to upload crime information.</p><p>Please be sure to check <a href="http://www.columbuspolice.org/reports/SearchLocation">the CPD web portal</a> later today or tomorrow for any updates.</p>'
 end
 
-page = agent.get "http://dps-web-01.busfin.ohio-state.edu/police/daily_log_2/view.php?date=yesterday"
-campusPage = Nokogiri::HTML(page.body)
-crimeTable = campusPage.css("table[class='log']")
-crimesFromTable = crimeTable.css("td[class='log']")
-numberOfOSUCrimes = crimesFromTable.length/8
-# Visit OSU PD's web log, get number of crimes committed on campus the previous day
+websiteDown = false
+retries = 3
 
-if numberOfOSUCrimes == 0
-	crimeHTML = crimeHTML + "<h1>0 On-campus crimes for #{yesterdayWithDay}</h1>"
-	crimeHTML = crimeHTML + '<p>This is either due to no crimes occuring on-campus, or the Ohio State Police Department forgetting to upload crime information.</p><p>Please be sure to check <a href="http://www.ps.ohio-state.edu/police/daily_log/view.php?date=yesterday">the OSU PD web portal</a> later today or tomorrow for any updates.</p>'
-	
-else
-	#Else there were crimes, extract and add to result
-	
-	mapURL = "<img src = 'https://maps.googleapis.com/maps/api/staticmap?zoom=13&center=the+ohio+state+university&size=370x330&scale=2&maptype=roadmap&markers=color:blue%7Clabel:"
-	crimeHTML = crimeHTML + "<br><br>"
-	
-	crimeHTML = crimeHTML + "<h1>#{numberOfOSUCrimes} On-campus crimes for #{yesterdayWithDay}</h1>"
-	
-	crimeTable = '<table style="width:80%;text-align: left;" cellpadding="10"><tbody><tr><th>Report Number</th><th>Incident Type</th><th>Location</th><th>Description</th></tr>'
-	# Setup table for on-campus crime information
-	
-	i = 0
-	while i < crimesFromTable.length do
-		crimeTable = crimeTable + '<tr>'
-		crimeTable = crimeTable + '<td>' + crimesFromTable[i].text + '</td>'
-		crimeTable = crimeTable + '<td>' + crimesFromTable[i + 5].text + '</td>'
-		crimeTable = crimeTable + '<td>' + crimesFromTable[i + 6].text + '</td>'
-		crimeTable = crimeTable + '<td>' + crimesFromTable[i + 7].text + '</td>'
-		crimeTable = crimeTable + '</tr>'
-		
-		location = crimesFromTable[i + 6].text
-		location.delete!("&")
-			
-		if location.include? " "
-			mapURL += "%7C" + location.gsub!(/\s+/, '+') + "+Ohio+State+University+columbus+ohio"
-		else
-			mapURL += "%7C" + location + "+Ohio+State+University+columbus+ohio"
-		end
-		# Clean up location to make it suitable for searching
-			
-		i += 8
+begin
+	page = agent.get "hhttp://dps-web-01.busfin.ohio-state.edu/police/daily_log_2/view.php?date=yesterday"
+rescue
+	if retries > 0
+		retries -= 1
+		sleep 5
+		retry
+	else
+		websiteDown = true
+		crimeHTML += "<h1>0 On-campus crimes for #{yesterdayWithDay} - Website Down</h1>"
+		crimeHTML += '<p>The OSU Police Department\'s website is currently down.</p><p>Please be sure to check <a href="https://dps.osu.edu/daily-crime-log">the OSU PD web portal</a> later today or tomorrow for any updates.</p>'
+		# Report that there were no on-campus crimes for this date
+		# Else, write that website was down
 	end
-	# Insert on-campus crime information into table
-	mapURL += "&maptype=terrain&key=" + key
-	crimeHTML += mapURL
-	crimeHTML += crimeTable
-	crimeHTML += '</tbody></table><p><a href="http://cailinpitt.github.io/AwareOSU/definitions#on">Confused about the meaning of a crime?</a></p>'
-	# End table
-end
+	else
+		campusPage = Nokogiri::HTML(page.body)
+		crimeTable = campusPage.css("table[class='log']")
+		crimesFromTable = crimeTable.css("td[class='log']")
+		numberOfOSUCrimes = crimesFromTable.length/8
+		# Visit OSU PD's web log, get number of crimes committed on campus the previous day
 
+		if ((numberOfOSUCrimes == 0) && (websiteDown == false))
+			crimeHTML = crimeHTML + "<h1>0 On-campus crimes for #{yesterdayWithDay}</h1>"
+			crimeHTML = crimeHTML + '<p>This is either due to no crimes occuring on-campus, or the Ohio State Police Department forgetting to upload crime information.</p><p>Please be sure to check <a href="https://dps.osu.edu/daily-crime-log">the OSU PD web portal</a> later today or tomorrow for any updates.</p>'
+	
+		else if  numberOfOSUCrimes > 0
+			#Else there were crimes, extract and add to result
+	
+			mapURL = "<img src = 'https://maps.googleapis.com/maps/api/staticmap?zoom=13&center=the+ohio+state+university&size=370x330&scale=2&maptype=roadmap&markers=color:blue%7Clabel:"
+			crimeHTML = crimeHTML + "<br><br>"
+	
+			crimeHTML = crimeHTML + "<h1>#{numberOfOSUCrimes} On-campus crimes for #{yesterdayWithDay}</h1>"
+	
+			crimeTable = '<table style="width:80%;text-align: left;" cellpadding="10"><tbody><tr><th>Report Number</th><th>Incident Type</th><th>Location</th><th>Description</th></tr>'
+			# Setup table for on-campus crime information
+	
+			i = 0
+			while i < crimesFromTable.length do
+				crimeTable = crimeTable + '<tr>'
+				crimeTable = crimeTable + '<td>' + crimesFromTable[i].text + '</td>'
+				crimeTable = crimeTable + '<td>' + crimesFromTable[i + 5].text + '</td>'
+				crimeTable = crimeTable + '<td>' + crimesFromTable[i + 6].text + '</td>'
+				crimeTable = crimeTable + '<td>' + crimesFromTable[i + 7].text + '</td>'
+				crimeTable = crimeTable + '</tr>'
+		
+				location = crimesFromTable[i + 6].text
+				location.delete!("&")
+			
+				if location.include? " "
+					mapURL += "%7C" + location.gsub!(/\s+/, '+') + "+Ohio+State+University+columbus+ohio"
+				else
+					mapURL += "%7C" + location + "+Ohio+State+University+columbus+ohio"
+				end
+				# Clean up location to make it suitable for searching
+			
+				i += 8
+			end
+			# Insert on-campus crime information into table
+			mapURL += "&maptype=terrain&key=" + key
+			crimeHTML += mapURL
+			crimeHTML += crimeTable
+			crimeHTML += '</tbody></table><p><a href="http://cailinpitt.github.io/AwareOSU/definitions#on">Confused about the meaning of a crime?</a></p>'
+			# End table
+		end
+	end
+end
 Mail.deliver do
 	to 'awareosulist@googlegroups.com'
 	from 'awareosu@gmail.com'
