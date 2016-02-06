@@ -163,34 +163,53 @@ offCampus.close
 onCampus = File.open("/home/pi/Documents/AwareOSU/oncampus.txt", "a")
 # Open file to dump on-campus information into
 
-page = agent.get "http://dps-web-01.busfin.ohio-state.edu/police/daily_log_2/view.php?date=yesterday"
-campusPage = Nokogiri::HTML(page.body)
-crimeTable = campusPage.css("table[class='log']")
-crimesFromTable = crimeTable.css("td[class='log']")
-numberOfOSUCrimes = crimesFromTable.length/8
-# Visit OSU PD's web log, get number of crimes committed on campus the previous day
+retries = 3
 
-if numberOfOSUCrimes > 0
-# There were on-campus crimes today, get information and save to textfile.
-
-i = 0
-	while i < crimesFromTable.length do
+begin
+	page = agent.get "http://dps-web-01.busfin.ohio-state.edu/police/daily_log_2/view.php?date=yesterday"
+	# Attempt to reach OSU PD
+rescue
+	if retries > 0
+		retries -= 1
+		sleep 5
+		retry
+	else
+		websiteDown = true
 		onCampus.puts yesterdayWithDay
-		onCampus.puts crimesFromTable[i].text
-		onCampus.puts crimesFromTable[i + 5].text
-		onCampus.puts crimesFromTable[i + 6].text
-		onCampus.puts crimesFromTable[i + 7].text
-		# Dump information into textfile
-		
-		i += 8
+		onCampus.puts "-"
+		onCampus.puts "-"
+		onCampus.puts "-"
+		onCampus.puts "OSU PD website was down, unable to retrieve crimes for #{yesterdayWithDay}."
+		# Report that website was down for this date
 	end
 else
-	onCampus.puts yesterdayWithDay
-	onCampus.puts "-"
-	onCampus.puts "-"
-	onCampus.puts "-"
-	onCampus.puts "No on-campus crimes reported for #{yesterdayWithDay}"
-	# Report that there were no on-campus crimes for this date
+	campusPage = Nokogiri::HTML(page.body)
+	crimeTable = campusPage.css("table[class='log']")
+	crimesFromTable = crimeTable.css("td[class='log']")
+	numberOfOSUCrimes = crimesFromTable.length/8
+	# Visit OSU PD's web log, get number of crimes committed on campus the previous day
+
+	if numberOfOSUCrimes > 0
+		# There were on-campus crimes today, get information and save to textfile.
+		i = 0
+		while i < crimesFromTable.length do
+			onCampus.puts yesterdayWithDay
+			onCampus.puts crimesFromTable[i].text
+			onCampus.puts crimesFromTable[i + 5].text
+			onCampus.puts crimesFromTable[i + 6].text
+			onCampus.puts crimesFromTable[i + 7].text
+			# Dump information into textfile
+	
+			i += 8
+		end
+	else
+		onCampus.puts yesterdayWithDay
+		onCampus.puts "-"
+		onCampus.puts "-"
+		onCampus.puts "-"
+		onCampus.puts "No on-campus crimes reported for #{yesterdayWithDay}"
+		# Report that there were no on-campus crimes for this date
+	end
 end
 onCampus.close
 # Close onCampus connection
