@@ -50,9 +50,22 @@ if !File.exist? "/home/pi/Documents/AwareOSU/oncampus.txt"
 	onCampus = File.open("/home/pi/Documents/AwareOSU/oncampus.txt", "w")
 	onCampus.close
 end
+
+if !File.exist? "/home/pi/Documents/AwareOSU/offcampusbatch.txt"
+	offBatch = File.open("/home/pi/Documents/AwareOSU/offcampusbatch.txt", "w")
+	offBatch.close
+	# To be used for analytics
+end
+
+if !File.exist? "/home/pi/Documents/AwareOSU/oncampusbatch.txt"
+	onBatch = File.open("/home/pi/Documents/AwareOSU/oncampusbatch.txt", "w")
+	onBatch.close
+	# To be used for analytics
+end
 # If files do not exist, we need to create them
 
 offCampus = File.open("/home/pi/Documents/AwareOSU/offcampus.txt", "a")
+offBatch = File.open("/home/pi/Documents/AwareOSU/offcampusbatch.txt", "a")
 # Open off campus text file
 
 websiteDown = false
@@ -134,6 +147,10 @@ for i in 0...districtArray.length
 				offCampus.puts 'http://www.columbuspolice.org/reports/PublicReport?caseID=' + report
 				# Dump off-campus information into textfile.
 		
+				offBatch.puts crimeInfo[i + 1].text
+				offBatch.puts crimeInfo[i + 4].text
+				# Save crime type and location for analytics
+
 				i += 5
 				linkIndex += 1
 				# Insert information into table
@@ -158,9 +175,11 @@ if ((crimeNumTotal == 0) && (websiteDown == false))
 		# Report that there were no off-campus crimes for this date
 end
 offCampus.close
+offBatch.close
 # Close off-campus text file.
 
 onCampus = File.open("/home/pi/Documents/AwareOSU/oncampus.txt", "a")
+onBatch = File.open("/home/pi/Documents/AwareOSU/oncampusbatch.txt", "a")
 # Open file to dump on-campus information into
 
 retries = 3
@@ -200,6 +219,10 @@ else
 			onCampus.puts crimesFromTable[i + 7].text
 			# Dump information into textfile
 	
+			onBatch.puts crimesFromTable[i + 5].text
+			onBatch.puts crimesFromTable[i + 6].text
+			# Save crime type and location for analytics
+
 			i += 8
 		end
 	else
@@ -212,6 +235,7 @@ else
 	end
 end
 onCampus.close
+onBatch.close
 # Close onCampus connection
 
 # Now check if yesterday was Friday. We want to send users a digest of crimes from the previous week
