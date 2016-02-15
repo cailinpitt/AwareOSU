@@ -52,6 +52,8 @@ My Pi sometimes runs into an issue where it has trouble staying connected to the
 Visit the [AwareOSU Google form](http://goo.gl/forms/Oy5kZ4xHbX) to sign-up for either a daily or weekly delivery option.
 
 # Milestones
+* 02/16/2016 - AwareOSU analytics is released.
+
 * 01/13/2016 - AwareOSU has 800 users.
 
 * 01/09/2016 - [AwareOSU for Android is released](https://play.google.com/store/apps/details?id=awareosu.example.cailin.awareosu).
