@@ -19,6 +19,10 @@ def main
 
 	offcrimes = offCampusCrimeOccurances(offCampusArray)
 	oncrimes = onCampusCrimeOccurances(onCampusArray)
+	oncrimelocationshash = onCampusCrimeLocations(onCampusArray)
+	offcampusdatehash = offCampusFrequencyByDate(offCampusArray)
+	oncampusdatehash = onCampusFrequencyByDate(onCampusArray)
+	# Parse data
 	
 	offCrimeDescriptions = Array.new
 	offCrimeNumbers = Array.new
@@ -27,6 +31,7 @@ def main
 		  offCrimeDescriptions.push key.to_s + " #{(100.0 * value.to_i / totalOffCrimes).round}%"
 		  offCrimeNumbers.push value.to_i
 	end
+	# Get percentage of off campus crime types
 	
 	onCrimeDescriptions = Array.new
 	onCrimeNumbers = Array.new
@@ -35,15 +40,59 @@ def main
 		onCrimeDescriptions.push key.to_s + " #{(100.0 * value.to_i / totalOnCrimes).round}%"
 		onCrimeNumbers.push value.to_i
 	end
+	# Get percentage of on campus crime types
 	
-=begin
-	oncrimes.each do |key, value|
-		  puts "#{key}:#{value}"
+	onCrimeLocations = Array.new
+	onCrimeLocationNumbers = Array.new
+	totalOnCrimeLocations = oncrimelocationshash.values.inject(:+)
+	oncrimelocationshash.each do |key, value|
+		onCrimeLocations.push key.to_s + " #{(100.0 * value.to_i / totalOnCrimeLocations).round}%"
+		onCrimeLocationNumbers.push value.to_i
 	end
-=end
-	htmlString = "<h3>Crime Occurances</h3>"
-	htmlString += Gchart.pie(:data => offCrimeNumbers, :title => 'Off Campus Crime Occurences', :format => 'image_tag', :labels => offCrimeDescriptions, :size => '785x380',  :theme => :thirty7signals)
-	htmlString += Gchart.pie(:data => onCrimeNumbers, :title => 'On Campus Crime Occurences', :format => 'image_tag', :labels => onCrimeDescriptions, :size => '785x380',  :theme => :thirty7signals)
+	
+	offCrimeDates = Array.new
+	offCrimeFreq = Array.new
+	i = 0
+	offcampusdatehash = offcampusdatehash.sort_by{ |k, v| v }.reverse.to_h
+	offcampusdatehash.each do |key, value|
+		if i < 5
+			offCrimeDates.push key.to_s + " (#{value.to_i})"
+			offCrimeFreq.push value.to_i
+		end
+		i += 1
+	end
+	# Get top five off campus days with the most crimes
+	
+	onCrimeDates = Array.new
+	onCrimeFreq = Array.new
+	i = 0
+	oncampusdatehash = oncampusdatehash.sort_by{ |k, v| v }.reverse.to_h
+	oncampusdatehash.each do |key, value|
+		if i < 5
+			onCrimeDates.push key.to_s + " (#{value.to_i})"
+			onCrimeFreq.push value.to_i
+		end
+		i += 1
+	end
+	# Get top five off campus days with the most crimes
+
+	htmlString = "<h1>Analytics for the month of #{(Time.now - (3600 * 24)).strftime("%B")}</h1><br>"
+	htmlString += "<p>For the month of #{(Time.now - (3600 * 24)).strftime("%B")}, AwareOSU reported <b>#{totalOffCrimes} off campus crimes</b> and <b>#{totalOnCrimes} on campus crimes</b>, for a total of <b>#{totalOffCrimes + totalOnCrimes} crimes</b>.</p><br>"
+	htmlString += "<br><hr>"
+	htmlString += "<h2>Crime Occurances</h2>"
+	htmlString += "<center>" + Gchart.pie(:data => offCrimeNumbers, :title => 'Off Campus Crime Occurences', :format => 'image_tag', :labels => offCrimeDescriptions, :size => '785x380',  :theme => :thirty7signals) + "</center>"
+	htmlString += "<br>"
+	htmlString += "<center>" + Gchart.pie(:data => onCrimeNumbers, :title => 'On Campus Crime Occurences', :format => 'image_tag', :labels => onCrimeDescriptions, :size => '785x380',  :theme => :thirty7signals) + "</center>"
+	htmlString += "<br><br><hr>"
+	htmlString += "<h2>Crime Locations</h2>"
+	htmlString += "<center>" + Gchart.pie(:data => onCrimeLocationNumbers, :title => 'On Campus Crime Locations', :format => 'image_tag', :labels => onCrimeLocations, :size => '785x380',  :theme => :thirty7signals) + "</center>"
+	htmlString += "<br><br><hr>"
+	htmlString += "<h2>Top Five Busiest Days</h2>"
+	htmlString += "<p>For <b>off campus crimes</b>, #{offcampusdatehash.max_by{ |k,v| v }[0]} had the most crimes (#{offcampusdatehash.max_by{ |k,v| v }[1]}) reported in the month of #{(Time.now - (3600 * 24)).strftime("%B")}. For <b>on campus crimes</b>, #{oncampusdatehash.max_by{ |k,v| v }[0]} had the most crimes reported (#{oncampusdatehash.max_by{ |k,v| v }[1]}).</p><br>"
+	htmlString += "<center>" + Gchart.line(:data => offCrimeFreq, :title => 'Off Campus dates', :format => 'image_tag', :labels => offCrimeDates, :bar_width_and_spacing => 25, :size => '700x200', :line_colors => 'bb0000') + "</center>"
+	htmlString += "<br><center>" + Gchart.line(:data => onCrimeFreq, :title => 'On Campus dates', :format => 'image_tag', :labels => onCrimeDates, :bar_width_and_spacing => 25, :size => '700x200', :line_colors => 'bb0000') + "</center>"
+	# Piece together HTML email based on data
+	
 	sendEmail(htmlString)
 	# Send Analytics email
 end
@@ -54,28 +103,29 @@ end
 def offCampusCrimeOccurances(offCampusArray)
 	offCrimeTypes = Array.new
 	
-	for i in 0...offCampusArray.length
-		if i % 2 == 0
-			offCampusArray[i] = offCampusArray[i].split '-'
-			# Split crime type
-			for k in 0...offCampusArray.length
-				if offCampusArray[i][k] != nil
-					offCampusArray[i][k].strip!
-				end
+	i = 0
+	while i < offCampusArray.length
+		offCampusArray[i + 1] = offCampusArray[i + 1].split '-'
+		# Split crime type
+		for k in 0...offCampusArray.length
+			if offCampusArray[i + 1][k] != nil
+				offCampusArray[i + 1][k].strip!
 			end
-			# Clean up formatting
-			
-			if offCampusArray[i].map(&:upcase).include? "ATTEMPT"
-				offCrimeTypes.push offCampusArray[i][1].delete("\n") + " - Attempt"
-			else
-				offCrimeTypes.push offCampusArray[i][1].delete("\n")
-			end
-			# Distinguish between committed crime and attempted crime
 		end
+		# Clean up formatting
+		
+		if offCampusArray[i + 1].map(&:upcase).include? "ATTEMPT"
+			offCrimeTypes.push offCampusArray[i + 1][1].delete("\n") + " - Attempt"
+		else
+			offCrimeTypes.push offCampusArray[i + 1][1].delete("\n")
+		end
+		# Distinguish between committed crime and attempted crime
+		i += 3
 	end
 
 	offcrimes = Hash.new 0
 	offCrimeTypes.each {|v| offcrimes[v] += 1}
+	# Calculate frequency
 	
 	return offcrimes
 end
@@ -86,19 +136,87 @@ end
 def onCampusCrimeOccurances(onCampusArray)
 	onCrimeTypes = Array.new
 	
-	for i in 0...onCampusArray.length
-		if i % 2 == 0
-			onCrimeTypes.push onCampusArray[i].delete("\n")
-		end
+	i = 0
+	while i < onCampusArray.length
+		onCrimeTypes.push onCampusArray[i + 1].delete("\n").strip
+		
+		i += 3
 	end
 	
 	oncrimes = Hash.new 0
 	onCrimeTypes.each {|v| oncrimes[v] += 1}
+	# Calculate frequency
 	
 	return oncrimes
 end
 
+=begin
+	Get locations of each on campus crime
+=end
+def onCampusCrimeLocations(onCampusArray)
+	onCrimeTypes = Array.new
+	
+	i = 0
+	while i < onCampusArray.length
+		onCrimeTypes.push onCampusArray[i + 2].delete("\n").strip
+		
+		i += 3
+	end
+	
+	oncrimes = Hash.new 0
+	onCrimeTypes.each {|v| oncrimes[v] += 1}
+	# Calculate frequency
+	
+	return oncrimes
+end
+
+=begin
+	Get number of off campus crimes per day
+=end
+def offCampusFrequencyByDate(offCampusArray)
+	offCrimeDates = Array.new
+	
+	i = 0
+	while i < offCampusArray.length
+		offCampusArray[i].strip!.delete("\n")
+		# Clean up formatting
+		
+		offCrimeDates.push offCampusArray[i]
+		i += 3
+	end
+
+	offdates = Hash.new 0
+	offCrimeDates.each {|v| offdates[v] += 1}
+	# Calculate frequency
+	
+	return offdates
+end
+
+=begin
+	Get number of on campus crimes per day
+=end
+def onCampusFrequencyByDate(onCampusArray)
+	onCrimeDates = Array.new
+	
+	i = 0
+	while i < onCampusArray.length - 1
+		onCampusArray[i].strip!.delete("\n")
+		# Clean up formatting
+		onCrimeDates.push onCampusArray[i]
+		i += 3
+	end
+
+	ondates = Hash.new 0
+	onCrimeDates.each {|v| ondates[v] += 1}
+	
+	return ondates
+end
+
+=begin
+	Send analytics email to subscribers
+=end
 def sendEmail(htmlString)
+	passArray = IO.readlines('/home/pi/Documents/p')
 	options = {	:address => "smtp.gmail.com",
 							:port => 587,
 							:user_name => 'awareosu',
@@ -115,19 +233,21 @@ def sendEmail(htmlString)
 	mail = Mail.new({
 		:to => 'cailinpitt1@gmail.com',
 		:from => 'awareosu@gmail.com',
-		:subject => "AwareOSU - Analytics"
+		:subject => "AwareOSU - #{(Time.now - (3600 * 24)).strftime("%B")} Analytics"
 	});
-	
+	# Initialize email
 	
 	mail.attachments['AwareOSULogo.png'] = File.read('images/AwareOSULogo.png')
 	pic = mail.attachments['AwareOSULogo.png']
 	html_part = Mail::Part.new do
 		 content_type 'text/html; charset=UTF-8'
-		 body "<center><img src='cid:#{pic.cid}'></center>" + htmlString
+		 body "<center><img src='cid:#{pic.cid}'></center>" + htmlString + "<br><br><br><p>Best,</p><p>AwareOSU</p><br><p>P.S. <a href='http://cailinpitt.github.io/AwareOSU/definitions'>Confused about the meaning of a crime?</a></p><p>Please visit this <a href='http://goo.gl/forms/n3q6D53TT3'>link</a> to subscribe/unsubscribe.</p>"
 	end
+	# Insert email body into mail object
 	
 	mail.html_part  = html_part
 	mail.deliver!
+	# Deliver email
 end
 
 main #Call main to start script
