@@ -147,6 +147,7 @@ for i in 0...districtArray.length
 				offCampus.puts 'http://www.columbuspolice.org/reports/PublicReport?caseID=' + report
 				# Dump off-campus information into textfile.
 		
+				offBatch.puts yesterday
 				offBatch.puts crimeInfo[i + 1].text
 				offBatch.puts crimeInfo[i + 4].text
 				# Save crime type and location for analytics
@@ -219,6 +220,7 @@ else
 			onCampus.puts crimesFromTable[i + 7].text
 			# Dump information into textfile
 	
+			onBatch.puts yesterday
 			onBatch.puts crimesFromTable[i + 5].text
 			onBatch.puts crimesFromTable[i + 6].text
 			# Save crime type and location for analytics
