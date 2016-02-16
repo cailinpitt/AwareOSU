@@ -12,13 +12,12 @@ require 'gchart'
 	Main function
 =end
 def main
-	#offCampusArray = IO.readlines('/home/pi/Documents/AwareOSU/offcampusbatch.txt')
-	#onCampusArray = IO.readlines('/home/pi/Documents/AwareOSU/oncampusbatch.txt')
-	offCampusArray = IO.readlines('offbatch.txt')
-	onCampusArray = IO.readlines('onbatch.txt')
+	offCampusArray = IO.readlines('/home/pi/Documents/AwareOSU/offcampusbatch.txt')
+	onCampusArray = IO.readlines('/home/pi/Documents/AwareOSU/oncampusbatch.txt')
 
 	offcrimes = offCampusCrimeOccurances(offCampusArray)
 	oncrimes = onCampusCrimeOccurances(onCampusArray)
+	offcrimelocationshash = offCampusCrimeLocations(offCampusArray)
 	oncrimelocationshash = onCampusCrimeLocations(onCampusArray)
 	offcampusdatehash = offCampusFrequencyByDate(offCampusArray)
 	oncampusdatehash = onCampusFrequencyByDate(onCampusArray)
@@ -42,6 +41,15 @@ def main
 	end
 	# Get percentage of on campus crime types
 	
+	offCrimeLocations = Array.new
+	offCrimeLocationNumbers = Array.new
+	totalOffCrimeLocations = offcrimelocationshash.values.inject(:+)
+	offcrimelocationshash.each do |key, value|
+		offCrimeLocations.push key.to_s.sub('dis', "District ") + " #{(100.0 * value.to_i / totalOffCrimeLocations).round}%"
+		offCrimeLocationNumbers.push value.to_i
+	end
+	# Get locations of off campus crimes by district
+	
 	onCrimeLocations = Array.new
 	onCrimeLocationNumbers = Array.new
 	totalOnCrimeLocations = oncrimelocationshash.values.inject(:+)
@@ -49,6 +57,7 @@ def main
 		onCrimeLocations.push key.to_s + " #{(100.0 * value.to_i / totalOnCrimeLocations).round}%"
 		onCrimeLocationNumbers.push value.to_i
 	end
+	# Get locations of on campus crimes
 	
 	offCrimeDates = Array.new
 	offCrimeFreq = Array.new
@@ -85,6 +94,7 @@ def main
 	htmlString += "<center>" + Gchart.pie(:data => onCrimeNumbers, :title => 'On Campus Crime Occurences', :format => 'image_tag', :labels => onCrimeDescriptions, :size => '785x380',  :theme => :thirty7signals) + "</center>"
 	htmlString += "<br><br><hr>"
 	htmlString += "<h2>Crime Locations</h2>"
+	htmlString += "<center>" + Gchart.pie(:data => offCrimeLocationNumbers, :title => 'Off Campus Crime Locations (By District)', :format => 'image_tag', :labels => offCrimeLocations, :size => '785x380',  :theme => :thirty7signals) + "</center>"
 	htmlString += "<center>" + Gchart.pie(:data => onCrimeLocationNumbers, :title => 'On Campus Crime Locations', :format => 'image_tag', :labels => onCrimeLocations, :size => '785x380',  :theme => :thirty7signals) + "</center>"
 	htmlString += "<br><br><hr>"
 	htmlString += "<h2>Top Five Busiest Days</h2>"
@@ -92,6 +102,9 @@ def main
 	htmlString += "<center>" + Gchart.line(:data => offCrimeFreq, :title => 'Off Campus dates', :format => 'image_tag', :labels => offCrimeDates, :bar_width_and_spacing => 25, :size => '700x200', :line_colors => 'bb0000') + "</center>"
 	htmlString += "<br><center>" + Gchart.line(:data => onCrimeFreq, :title => 'On Campus dates', :format => 'image_tag', :labels => onCrimeDates, :bar_width_and_spacing => 25, :size => '700x200', :line_colors => 'bb0000') + "</center>"
 	# Piece together HTML email based on data
+
+	createCSVFiles()
+	# Export data into CSV file
 	
 	sendEmail(htmlString)
 	# Send Analytics email
@@ -120,7 +133,7 @@ def offCampusCrimeOccurances(offCampusArray)
 			offCrimeTypes.push offCampusArray[i + 1][1].delete("\n")
 		end
 		# Distinguish between committed crime and attempted crime
-		i += 3
+		i += 4
 	end
 
 	offcrimes = Hash.new 0
@@ -149,6 +162,25 @@ def onCampusCrimeOccurances(onCampusArray)
 	
 	return oncrimes
 end
+
+=begin
+	Get locations of each off campus crime by district
+=end
+def offCampusCrimeLocations(offCampusArray)
+	offCrimeLoc = Array.new
+	i = 0
+	while i < offCampusArray.length
+		offCrimeLoc.push offCampusArray[i + 3].delete("\n").strip
+		i += 4
+	end
+	
+	offcrimes = Hash.new 0
+	offCrimeLoc.each {|v| offcrimes[v] += 1}
+	# Calculate frequency
+	
+	return offcrimes
+end
+
 
 =begin
 	Get locations of each on campus crime
@@ -182,7 +214,7 @@ def offCampusFrequencyByDate(offCampusArray)
 		# Clean up formatting
 		
 		offCrimeDates.push offCampusArray[i]
-		i += 3
+		i += 4
 	end
 
 	offdates = Hash.new 0
@@ -213,14 +245,49 @@ def onCampusFrequencyByDate(onCampusArray)
 end
 
 =begin
+	Create CSV files
+=end
+def createCSVFiles()
+	onCSV = File.open("/home/pi/Documents/AwareOSU/OnCampus_#{(Time.now - (3600 * 24)).strftime("%B")}.csv", "w")
+	offCSV = File.open("/home/pi/Documents/AwareOSU/OffCampus_#{(Time.now - (3600 * 24)).strftime("%B")}.csv", "w")
+	
+	offCampus = IO.readlines('/home/pi/Documents/AwareOSU/offcampusbatch.txt')
+	onCampus = IO.readlines('/home/pi/Documents/AwareOSU/oncampusbatch.txt')
+	# Open files
+	
+	onCSV.puts "Date,CrimeType,Location"
+	offCSV.puts "Date,CrimeType,Address,District"
+	# Print CSV headings
+
+	i = 0
+	while i < offCampus.length
+		offCSV.puts offCampus[i].strip! + "," + offCampus[i + 1].strip!+ "," + offCampus[i + 2].strip! + "," + offCampus[i + 3].strip!
+		# Clean up formatting, print to CSV file
+		i += 4
+	end
+	
+	i = 0
+	while i < onCampus.length
+		onCSV.puts onCampus[i].strip!.delete("\n") + "," + onCampus[i + 1].strip!.delete("\n") + "," + onCampus[i + 2].strip!.delete("\n")
+		# Clean up formatting, print to CSV file
+		i += 3
+	end
+	
+	onCSV.close
+	offCSV.close
+	# Close files
+end
+
+=begin
 	Send analytics email to subscribers
 =end
 def sendEmail(htmlString)
-	passArray = IO.readlines('/home/pi/Documents/p')
+	#passArray = IO.readlines('/home/pi/Documents/p')
+	
 	options = {	:address => "smtp.gmail.com",
 							:port => 587,
 							:user_name => 'awareosu',
-							:password => passArray[0].delete!("\n"),
+							passArray[0].delete!("\n"),
 							:authentication => 'plain',
 							:enable_starttls_auto	=> true  }
 
@@ -239,6 +306,11 @@ def sendEmail(htmlString)
 	
 	mail.attachments['AwareOSULogo.png'] = File.read('images/AwareOSULogo.png')
 	pic = mail.attachments['AwareOSULogo.png']
+	
+	mail.add_file("OnCampus_#{(Time.now - (3600 * 24)).strftime("%B")}.csv")
+	mail.add_file("OffCampus_#{(Time.now - (3600 * 24)).strftime("%B")}.csv")
+	# Attach CSV files
+	
 	html_part = Mail::Part.new do
 		 content_type 'text/html; charset=UTF-8'
 		 body "<center><img src='cid:#{pic.cid}'></center>" + htmlString + "<br><br><br><p>Best,</p><p>AwareOSU</p><br><p>P.S. <a href='http://cailinpitt.github.io/AwareOSU/definitions'>Confused about the meaning of a crime?</a></p><p>Please visit this <a href='http://goo.gl/forms/n3q6D53TT3'>link</a> to subscribe/unsubscribe.</p>"
