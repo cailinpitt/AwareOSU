@@ -287,7 +287,7 @@ def sendEmail(htmlString)
 	options = {	:address => "smtp.gmail.com",
 							:port => 587,
 							:user_name => 'awareosu',
-							passArray[0].delete!("\n"),
+							:password => passArray[0].delete!("\n"),
 							:authentication => 'plain',
 							:enable_starttls_auto	=> true  }
 
