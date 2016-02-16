@@ -127,12 +127,12 @@ for i in 0...districtArray.length
 			crimeTableInfo = ""
 			# Set up variables to hold crime information
 	
-			i = 0
+			k = 0
 			j = 0;
 			linkIndex = 1;
 			# Counters decared
 	
-			while ((i < crimeNum) && (i < 145)) do
+			while ((k < crimeNum) && (k < 145)) do
 				report = '';
 				for j in 11...crimeReportNumbers[linkIndex]["onclick"].length - 1
 					char = '' + crimeReportNumbers[linkIndex]["onclick"][j]
@@ -141,18 +141,19 @@ for i in 0...districtArray.length
 				# This loop takes care of setting up the links to each individual crime's page, where more information is listed.
 		
 				offCampus.puts yesterdayWithDay
-				offCampus.puts crimeInfo[i].text
-				offCampus.puts crimeInfo[i + 1].text
-				offCampus.puts crimeInfo[i + 4].text
+				offCampus.puts crimeInfo[k].text
+				offCampus.puts crimeInfo[k + 1].text
+				offCampus.puts crimeInfo[k + 4].text
 				offCampus.puts 'http://www.columbuspolice.org/reports/PublicReport?caseID=' + report
 				# Dump off-campus information into textfile.
 		
 				offBatch.puts yesterday
-				offBatch.puts crimeInfo[i + 1].text
-				offBatch.puts crimeInfo[i + 4].text
+				offBatch.puts crimeInfo[k + 1].text
+				offBatch.puts crimeInfo[k + 4].text
+				offBatch.puts districtArray[i]
 				# Save crime type and location for analytics
 
-				i += 5
+				k += 5
 				linkIndex += 1
 				# Insert information into table
 			end
@@ -309,22 +310,29 @@ if yesterdayWithDay.include? "Friday"
 	#End table
 
 	crimeHTML += "<h1>#{onCampusNum} On-campus crimes for the week of #{yesterdayWithDay}</h1>" + crimeTable
+	
+	mail = Mail.new({
+		:to => 'awareosuweekly@googlegroups.com',
+		:from => 'awareosu@gmail.com',
+		:subject => "AwareOSU - Digest for #{lastFriday} to #{yesterdayWithDay}"
+	});
+
+	mail.attachments['AwareOSULogo.png'] = File.read('images/AwareOSULogo.png')
+	pic = mail.attachments['AwareOSULogo.png']
+
+	html_part = Mail::Part.new do
+		 content_type 'text/html; charset=UTF-8'
+		 body "<center><img src='cid:#{pic.cid}'></center>" + crimeHTML +  '<br><p>Best,</p><p>AwareOSU</p><br><br><p>P.S. Please visit this <a href="http://goo.gl/forms/n3q6D53TT3">link</a> to subscribe/unsubscribe.</p>'
+	end
+	# Insert email body into mail object
+
+	mail.html_part  = html_part
+	mail.deliver!
+	# Send digest to users
 
 	offCampus = File.open("/home/pi/Documents/AwareOSU/offcampus.txt", "w")
 	offCampus.close
 	onCampus = File.open("/home/pi/Documents/AwareOSU/oncampus.txt", "w")
 	onCampus.close
 	# Clear text files, we don't need last week's info anymore
-	
-	Mail.deliver do
-		to 'awareosuweekly@googlegroups.com'
-		from 'awareosu@gmail.com'
-		subject "AwareOSU - Digest for #{lastFriday} to #{yesterdayWithDay}"
-
-		html_part do
-			 content_type 'text/html; charset=UTF-8'
-			 body crimeHTML+ '<br><p>Best,</p><p>AwareOSU</p><br><br><p>P.S. Please visit this <a href="http://goo.gl/forms/n3q6D53TT3">link</a> to subscribe/unsubscribe.</p>'
-		end
-	end
-	# Send digest to users
 end

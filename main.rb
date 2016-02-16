@@ -231,14 +231,22 @@ rescue
 		end
 	end
 end
-Mail.deliver do
-	to 'awareosulist@googlegroups.com'
-	from 'awareosu@gmail.com'
-	subject "AwareOSU - #{yesterdayWithDay}"
+mail = Mail.new({
+		:to => 'awareosulist@googlegroups.com',
+		:from => 'awareosu@gmail.com',
+		:subject => "AwareOSU - #{yesterdayWithDay}"
+	});
 
-	html_part do
+mail.attachments['AwareOSULogo.png'] = File.read('images/AwareOSULogo.png')
+pic = mail.attachments['AwareOSULogo.png']
+
+html_part = Mail::Part.new do
 		 content_type 'text/html; charset=UTF-8'
-		 body crimeHTML + '<br><p>Best,</p><p>AwareOSU</p><br><br><p>P.S. Please visit this <a href="http://goo.gl/forms/n3q6D53TT3">link</a> to subscribe/unsubscribe.</p>'
+		 body "<center><img src='cid:#{pic.cid}'></center>" + crimeHTML + '<br><p>Best,</p><p>AwareOSU</p><br><br><p>P.S. Please visit this <a href="http://goo.gl/forms/n3q6D53TT3">link</a> to subscribe/unsubscribe.</p>'
 	end
-end
+	# Insert email body into mail object
+
+mail.html_part  = html_part
+mail.deliver!
+# Deliver email
 # Send crimes to users
