@@ -317,7 +317,7 @@ if yesterdayWithDay.include? "Friday"
 		:subject => "AwareOSU - Digest for #{lastFriday} to #{yesterdayWithDay}"
 	});
 
-	mail.attachments['AwareOSULogo.png'] = File.read('images/AwareOSULogo.png')
+	mail.attachments['AwareOSULogo.png'] = File.read('/home/pi/Documents/AwareOSU/images/AwareOSULogo.png')
 	pic = mail.attachments['AwareOSULogo.png']
 
 	html_part = Mail::Part.new do
