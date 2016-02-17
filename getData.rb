@@ -23,8 +23,8 @@ agent.read_timeout = 60
 agent.user_agent_alias = "Mac Safari" 
 # Chose Safari because I like Macs
 
-offCampus = File.open("offcampusdata.txt", "w")
-onCampus = File.open("oncampusdata.txt", "w")
+offCampus = File.open("offcampusbatch.txt", "w")
+onCampus = File.open("oncampusbatch.txt", "w")
 # If files do not exist, we need to create them
 
 puts "Enter start date (mm/dd/yyyy):"
@@ -33,8 +33,8 @@ startDate = gets.chomp
 puts "Enter end date (mm/dd/yyyy):"
 endDate = gets.chomp
 
-startTimeObject = Date.parse(startDate)
-endDateBound = Date.parse(endDate)
+startTimeObject = Date.strptime(startDate, "%m/%d/%Y")
+endDateBound = Date.strptime(endDate, "%m/%d/%Y")
 endDateBound += 1
 
 while startTimeObject.strftime("%m/%d/%Y") != endDateBound.strftime("%m/%d/%Y")
