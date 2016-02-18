@@ -8,6 +8,7 @@
 require 'mail'
 # GChart uses the Google Chart API to visualize crime data
 require 'gchart'
+
 =begin
 	Main function
 =end
@@ -78,11 +79,14 @@ def main
 	# To hold top five days
 	
 	offCrimeFreqALL = Array.new
+	offcampusdatehash.each do |key, value|
+		offCrimeFreqALL.push value.to_i
+	end
 	# To hold all days
+
 	i = 0
 	offcampusdatehash = offcampusdatehash.sort_by{ |k, v| v }.reverse.to_h
 	offcampusdatehash.each do |key, value|
-		offCrimeFreqALL.push value.to_i
 		if i < 5
 			offCrimeDates.push key.to_s + " (#{value.to_i})"
 			offCrimeFreq.push value.to_i
@@ -96,9 +100,12 @@ def main
 	i = 0
 	
 	onCrimeFreqALL = Array.new
-	oncampusdatehash = oncampusdatehash.sort_by{ |k, v| v }.reverse.to_h
 	oncampusdatehash.each do |key, value|
 		onCrimeFreqALL.push value.to_i
+	end
+
+	oncampusdatehash = oncampusdatehash.sort_by{ |k, v| v }.reverse.to_h
+	oncampusdatehash.each do |key, value|
 		if i < 5
 			onCrimeDates.push key.to_s + " (#{value.to_i})"
 			onCrimeFreq.push value.to_i
@@ -125,9 +132,9 @@ def main
 	htmlString += "" + Gchart.line(:data => offCrimeFreq, :title => 'Off Campus dates', :format => 'image_tag', :labels => offCrimeDates, :bar_width_and_spacing => 25, :size => '700x200', :line_colors => 'bb0000') + ""
 	htmlString += "<br>" + Gchart.line(:data => onCrimeFreq, :title => 'On Campus dates', :format => 'image_tag', :labels => onCrimeDates, :bar_width_and_spacing => 25, :size => '700x200', :line_colors => 'bb0000') + ""
 	htmlString += "<br><br><hr>"
-	htmlString += "<h2>Overview of Month</h2>"
-	htmlString += "<br>" + Gchart.sparkline(:data => offCrimeFreqALL, :title => "Off Campus Crime Occurrences For Entire Month (From First to Last Day)", :format => 'image_tag', :size => '700x200', :line_colors => 'bb0000') + "<br>"
-	htmlString += "<br>" + Gchart.sparkline(:data => onCrimeFreqALL, :title => "On Campus Crime Occurrences For Entire Month (From First to Last Day)", :format => 'image_tag', :size => '700x200', :line_colors => 'bb0000')
+	htmlString += "<h2>Monthly Trend</h2>"
+	htmlString += "<br>" + Gchart.sparkline(:data => offCrimeFreqALL, :title => "Off Campus Crime Trend (From First to Last Day)", :format => 'image_tag', :size => '700x200', :line_colors => 'bb0000') + "<br>"
+	htmlString += "<br>" + Gchart.sparkline(:data => onCrimeFreqALL, :title => "On Campus Crime Trend (From First to Last Day)", :format => 'image_tag', :size => '700x200', :line_colors => 'bb0000')
 	# Piece together HTML email based on data
 
 	createCSVFiles()
