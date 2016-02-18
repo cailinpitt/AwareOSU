@@ -8,25 +8,37 @@
 OSU students (well, college students in general) enjoy being safe. Whenever a crime occurs on campus that has a continuing safety threat, OSU sends every student and staff an email briefly explaining the crime. However, OSU doesn't send crime alerts for all crimes that occur *on and around* campus (where many students live). The reality is that we live in a dangerous world, and we want to be aware of what is happening around us.
 
 # Features
-Program runs once every day (using a CRON job), webscrapes the [Columbus Police Department's unofficial web report portal](http://www.columbuspolice.org/reports/) (to find off-campus crimes committed in zone 4, more on zone 4 later) and the [OSU Police department's daily log system](http://www.ps.ohio-state.edu/police/daily_log/view.php?date=yesterday), finds the previous days crimes, and emails the list of crimes to a Google Group of users who signed up for the service.
+AwareOSU visits the [Columbus Police Department's unofficial web report portal](http://www.columbuspolice.org/reports/) (to find off-campus crimes committed in zone 4, more on zone 4 later) and the [OSU Police department's daily log system](http://www.ps.ohio-state.edu/police/daily_log/view.php?date=yesterday), finds information related to crimes committed the previous day, and sends crime information out to users.
+
+For users who select the daily delivery option, AwareOSU will send an email each morning at 10:15 AM containing crime information from the previous day. For users who select the weekly delivery option, AwareOSU will send an email containing crime information from the previous week at 10:20 AM every Saturday morning.
+
+AwareOSU also performs analytics. On the first day of every month, AwareOSU will send out a detailed report to users containing breakdowns of crime occurrances, locations, and monthly trends.
 
 # Great overview. What is the code actually doing?
-This Ruby program utilizes three great gems, Mechanize, Nokogiri, and Mail. This program visits the CPD web portal and OSU PD online log system (listed above) using Mechanize, parses the HTML of the search page containing all crimes committed yesterday using Nokogiri, and sends the information out in a HTML table using Mail.
+* **Main** - This Ruby script runs daily at 10:15 AM. It utilizes three great gems (Mechanize, Nokogiri, and Mail) to visit the CPD web portal and OSU PD online log system (listed above) using Mechanize, parses the HTML of the search page containing all crimes committed yesterday using Nokogiri, and sends the information out in a HTML table using Mail.
+
+* **Weekly** - This Ruby script runs every Saturday morning at 10:20 AM. It utilizes three great gems (Mechanize, Nokogiri, and Mail) to visit the CPD web portal and OSU PD online log system (listed above) using Mechanize, parses the HTML of the search page containing all crimes committed yesterday using Nokogiri, and sends the information out in a HTML table using Mail.
+
+* **Analytics** - This Ruby script runs on the first day of every month at 10:00 AM. It utilizes three great gems (Mail and Gchart) to analyze crime information from the previous month, inserts data into charts using Gchart, and sends the information out using Mail. Analytics also attaches two CSV files containing all the crime information AwareOSU analyzes for the entire month, in case users want to perform their own analysis.
 
 # Images
-#### Email from AwareOSU
-![Email from AwareOSU (Map)](https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/fullEmail1.PNG)
-![Email from AwareOSU](https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/fullEmail2.PNG)
----
+#### Daily Email From AwareOSU
+![Daily Email from AwareOSU](https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/dailyOff.PNG)
+![Daily Email from AwareOSU](https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/dailyOn.PNG)
 
-#### Looks good on mobile too
-<img src="https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/image1.PNG" alt="Mobile" width="250" height="445"/>
+<hr>
 
----
+#### Weekly Email From AwareOSU
+![Weekly Email from AwareOSU](https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/weeklyOff.PNG)
+![Weekly Email from AwareOSU](https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/weeklyOn.PNG)
 
-#### Say hi to the Raspberry Pi that runs AwareOSU every morning!
-![Raspberry Pi](https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/pi.png)
+<hr>
 
+#### Monthly AwareOSU Analytics Report
+![Crime Occurrences](https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/crimeOccurances.PNG)
+![Crime Locations](https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/crimeLocations.PNG)
+![Top 5 Busiest Days](https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/busiestDays.PNG)
+![Monthly Trend](https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/trend.PNG)
 ---
 #### Off-campus crime information is pulled from parts of Zone 4 (Districts 30, 33, 34, 40, 41, 42, 43, 44, 50, and 53), visualized here
 ![Zone 4](https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/zone4.PNG)
@@ -39,7 +51,7 @@ For example:
 This is because some crimes may have multiple victims, as seen on the Columbus Police Department's web portal:
 ![Multiple crimes](https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/repeat1.PNG)
 
-Currently, victim names aren't included in the digest. Even though this is publically accessible information, I'm not sure how comfortable people would feel with names being emailed to the 400+ AwareOSU users.
+Currently, victim names aren't included in emails.
 
 # What does the shell script do?
 My Pi sometimes runs into an issue where it has trouble staying connected to the Internet while using an ethernet connection. It will say that it has a connection, but in actuality I cannot access the internet. This seems to be a semi-common problem among Pis, and this also causes problems for AwareOSU since it can't access the internet if there isn't a connection. This script resets the ethernet connection every morning one minute before AwareOSU is scheduled to run, ensuring that the Pi has a valid, working internet connection.
@@ -47,6 +59,7 @@ My Pi sometimes runs into an issue where it has trouble staying connected to the
 # Goals
 1. Develop AwareOSU mobile applications for Android and iOS.
   * AwareOSU for Android has been released! Download it [here](https://play.google.com/store/apps/details?id=awareosu.example.cailin.awareosu).
+  * AwareOSU for iOS is currently being developed.
 
 # How to sign up
 Visit the [AwareOSU Google form](http://goo.gl/forms/Oy5kZ4xHbX) to sign-up for either a daily or weekly delivery option.
