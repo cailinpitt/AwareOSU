@@ -28,7 +28,7 @@
 
 <h1>
 <a id="features" class="anchor" href="#features" aria-hidden="true"><span class="octicon octicon-link"></span></a>Features</h1>
-<p>AwareOSU visits the <a href="http://www.columbuspolice.org/reports/">Columbus Police Department's unofficial web report portal</a> (to find off-campus crimes committed in zone 4, more on zone 4 later) and the <a href="http://www.ps.ohio-state.edu/police/daily_log/view.php?date=yesterday">OSU Police department's daily log system</a>, finds the previous days crimes, and sends crime information out to users.</p>
+<p>AwareOSU visits the <a href="http://www.columbuspolice.org/reports/">Columbus Police Department's unofficial web report portal</a> (to find off-campus crimes committed in zone 4, more on zone 4 later) and the <a href="http://www.ps.ohio-state.edu/police/daily_log/view.php?date=yesterday">OSU Police department's daily log system</a>, finds information related to crimes committed the previous day, and sends crime information out to users.</p>
 
 <p>For users who select the daily delivery option, AwareOSU will send an email each morning at 10:15 AM containing crime information from the previous day. For users who select the weekly delivery option, AwareOSU will send an email containing crime information from the previous week at 10:20 AM every Saturday morning.</p>
 
@@ -44,6 +44,7 @@
 <li><p><b>Analytics</b> - This Ruby script runs on the first day of every month at 10:00 AM. It utilizes three great gems (Mail and Gchart) to analyze crime information from the previous month, inserts data into charts using Gchart, and sends the information out using Mail. Analytics also attaches two CSV files containing all the crime information AwareOSU analyzes for the entire month, in case users want to perform their own analysis.</p></li>
 </ul>
 
+<p>Please note: AwareOSU is run on a Raspberry Pi.</p>
 <h1>
 <a id="images" class="anchor" href="#images" aria-hidden="true"><span class="octicon octicon-link"></span></a>Images</h1>
 
