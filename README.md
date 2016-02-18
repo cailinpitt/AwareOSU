@@ -15,11 +15,15 @@ For users who select the daily delivery option, AwareOSU will send an email each
 AwareOSU also performs analytics. On the first day of every month, AwareOSU will send out a detailed report to users containing breakdowns of crime occurrances, locations, and monthly trends.
 
 # Great overview. What is the code actually doing?
-* **Main** - This Ruby script runs daily at 10:15 AM. It utilizes three great gems (Mechanize, Nokogiri, and Mail) to visit the CPD web portal and OSU PD online log system (listed above) using Mechanize, parses the HTML of the search page containing all crimes committed yesterday using Nokogiri, and sends the information out in a HTML table using Mail.
+* **Main.rb** - This Ruby script runs daily at 10:15 AM. It utilizes three great gems (Mechanize, Nokogiri, and Mail) to visit the CPD web portal and OSU PD online log system (listed above) using Mechanize, parses the HTML of the search page containing all crimes committed yesterday using Nokogiri, and sends the information out in a HTML table using Mail.
 
-* **Weekly** - This Ruby script runs every Saturday morning at 10:20 AM. It utilizes three great gems (Mechanize, Nokogiri, and Mail) to visit the CPD web portal and OSU PD online log system (listed above) using Mechanize, parses the HTML of the search page containing all crimes committed yesterday using Nokogiri, and sends the information out in a HTML table using Mail.
+* **Weekly.rb** - This Ruby script runs every Saturday morning at 10:20 AM. It utilizes three great gems (Mechanize, Nokogiri, and Mail) to visit the CPD web portal and OSU PD online log system (listed above) using Mechanize, parses the HTML of the search page containing all crimes committed yesterday using Nokogiri, and sends the information out in a HTML table using Mail.
 
-* **Analytics** - This Ruby script runs on the first day of every month at 10:00 AM. It utilizes three great gems (Mail and Gchart) to analyze crime information from the previous month, inserts data into charts using Gchart, and sends the information out using Mail. Analytics also attaches two CSV files containing all the crime information AwareOSU analyzes for the entire month, in case users want to perform their own analysis.
+* **Analytics.rb** - This Ruby script runs on the first day of every month at 10:00 AM. It utilizes three great gems (Mail and Gchart) to analyze crime information from the previous month, inserts data into charts using Gchart, and sends the information out using Mail. Analytics also attaches two CSV files containing all the crime information AwareOSU analyzes for the entire month, in case users want to perform their own analysis.
+
+* **getData.rb** - This script is used to supplement **Analytics.rb**. Basically, it gathers crime information from a specific period in time by asking the user what dates it wants to search between (ex. crime information from 01/01/2016 - 01/31/2016). 
+
+* **network-reset.sh** - My Pi sometimes runs into an issue where it has trouble staying connected to the Internet while using an ethernet connection, and will drop packets. This script resets the ethernet connection every morning one minute before an AwareOSU script is scheduled to run, ensuring that the Pi has a valid, working internet connection.
 
 Please note: AwareOSU is run on a Raspberry Pi.
 
