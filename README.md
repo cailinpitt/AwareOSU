@@ -21,6 +21,8 @@ AwareOSU also performs analytics. On the first day of every month, AwareOSU will
 
 * **Analytics** - This Ruby script runs on the first day of every month at 10:00 AM. It utilizes three great gems (Mail and Gchart) to analyze crime information from the previous month, inserts data into charts using Gchart, and sends the information out using Mail. Analytics also attaches two CSV files containing all the crime information AwareOSU analyzes for the entire month, in case users want to perform their own analysis.
 
+Please note: AwareOSU is run on a Raspberry Pi.
+
 # Images
 ### Daily Email From AwareOSU
 ![Daily Email from AwareOSU](https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/dailyOff.PNG)
@@ -42,7 +44,10 @@ AwareOSU also performs analytics. On the first day of every month, AwareOSU will
 ---
 ### Off-campus crime information is pulled from parts of Zone 4 (Districts 30, 33, 34, 40, 41, 42, 43, 44, 50, and 53), visualized here
 ![Zone 4](https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/zone4.PNG)
-
+---
+### AwareOSU is run on a Raspberry Pi
+![Pi](https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/pi.png)
+---
 # Why are some crimes listed multiple times?
 For example:
 
