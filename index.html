@@ -28,25 +28,43 @@
 
 <h1>
 <a id="features" class="anchor" href="#features" aria-hidden="true"><span class="octicon octicon-link"></span></a>Features</h1>
+<p>AwareOSU visits the <a href="http://www.columbuspolice.org/reports/">Columbus Police Department's unofficial web report portal</a> (to find off-campus crimes committed in zone 4, more on zone 4 later) and the <a href="http://www.ps.ohio-state.edu/police/daily_log/view.php?date=yesterday">OSU Police department's daily log system</a>, finds the previous days crimes, and sends crime information out to users.</p>
 
-<p>Program runs once every day (using a CRON job), webscrapes the <a href="http://www.columbuspolice.org/reports/">Columbus Police Department's unofficial web report portal</a> (to find off-campus crimes committed in zone 4, more on zone 4 later) and the <a href="http://www.ps.ohio-state.edu/police/daily_log/view.php?date=yesterday">OSU Police department's daily log system</a>, finds the previous days crimes, and emails the list of crimes to a Google Group of users who signed up for the mailing list.</p>
+<p>For users who select the daily delivery option, AwareOSU will send an email each morning at 10:15 AM containing crime information from the previous day. For users who select the weekly delivery option, AwareOSU will send an email containing crime information from the previous week at 10:20 AM every Saturday morning.</p>
+
+<p>AwareOSU also performs analytics. On the first day of every month, AwareOSU will send out a detailed report to users containing breakdowns of crime occurrances, locations, and monthly trends.</p>
 
 <h1>
 <a id="great-overview-what-is-the-code-actually-doing" class="anchor" href="#great-overview-what-is-the-code-actually-doing" aria-hidden="true"><span class="octicon octicon-link"></span></a>Great overview. What is the code actually doing?</h1>
+<ul>
+<li><p><b>Main</b> - This Ruby script runs daily at 10:15 AM. It utilizes three great gems (Mechanize, Nokogiri, and Mail) to visit the CPD web portal and OSU PD online log system (listed above) using Mechanize, parses the HTML of the search page containing all crimes committed yesterday using Nokogiri, and sends the information out in a HTML table using Mail.</p></li>
 
-<p>This Ruby program utilizes three great gems, Mechanize, Nokogiri, and Mail. This program visits the CPD web portal and OSU PD online log system (listed above) using Mechanize, parses the HTML of the search page containing all crimes committed yesterday using Nokogiri, and sends the information out in a HTML table using Mail.</p>
+<li><p><b>Weekly</b> - This Ruby script runs every Saturday morning at 10:20 AM. It utilizes three great gems (Mechanize, Nokogiri, and Mail) to visit the CPD web portal and OSU PD online log system (listed above) using Mechanize, parses the HTML of the search page containing all crimes committed yesterday using Nokogiri, and sends the information out in a HTML table using Mail.</p></li>
+</ul>
 
+<li><p><b>Analytics</b> - This Ruby script runs on the first day of every month at 10:00 AM. It utilizes three great gems (Mail and Gchart) to analyze crime information from the previous month, inserts data into charts using Gchart, and sends the information out using Mail. Analytics also attaches two CSV files containing all the crime information AwareOSU analyzes for the entire month, in case users want to perform their own analysis.</p></li>
 <h1>
 <a id="images" class="anchor" href="#images" aria-hidden="true"><span class="octicon octicon-link"></span></a>Images</h1>
 
 <h4>
-<a id="email-from-awareosu" class="anchor" href="#email-from-awareosu" aria-hidden="true"><span class="octicon octicon-link"></span></a>Email from AwareOSU</h4>
+<a id="daily" class="anchor" href="#daily" aria-hidden="true"><span class="octicon octicon-link"></span></a>Daily</h4>
 
-<p><img src="https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/fullEmail1.PNG" alt="Email from AwareOSU (Map)"></p>
+<p><img src="https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/dailyOff.PNG" alt="Daily email"></p>
+<p><img src="https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/dailyOn.PNG" alt="Daily email"></p>
 
-<h2>
-<a id="" class="anchor" href="#" aria-hidden="true"><span class="octicon octicon-link"></span></a><img src="https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/fullEmail2.PNG" alt="Email from AwareOSU">
-</h2>
+<h4>
+<a id="weekly" class="anchor" href="#weekly" aria-hidden="true"><span class="octicon octicon-link"></span></a>Weekly</h4>
+
+<p><img src="https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/weeklyOff.PNG" alt="Weekly email"></p>
+<p><img src="https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/weeklyOn.PNG" alt="Weekly email"></p>
+
+<h4>
+<a id="analytics" class="anchor" href="#analytics" aria-hidden="true"><span class="octicon octicon-link"></span></a>Analytics</h4>
+
+<p><img src="https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/crimeOccurances.PNG" alt="Crime Occurances"></p>
+<p><img src="https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/crimeLocations.PNG" alt="Crime Locations"></p>
+<p><img src="https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/busiestDays.PNG" alt="Busiest Days"></p>
+<p><img src="https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/trend.PNG" alt="Trend"></p>
 
 <hr>
 
@@ -76,6 +94,7 @@
 
 <ul>
 <li>AwareOSU for Android has been released! Download it <a href="https://play.google.com/store/apps/details?id=awareosu.example.cailin.awareosu">here</a>.</li>
+<li>AwareOSU for iOS is currently being developed.</li>
 </ul>
 </li>
 </ol>
@@ -89,6 +108,7 @@
 <a id="milestones" class="anchor" href="#milestones" aria-hidden="true"><span class="octicon octicon-link"></span></a>Milestones</h1>
 
 <ul>
+<li><p>02/16/2016 - AwareOSU analytics is released.</p></li>
 <li><p>01/13/2016 - AwareOSU has 800 users.</p></li>
 <li><p>01/09/2016 - <a href="https://play.google.com/store/apps/details?id=awareosu.example.cailin.awareosu">AwareOSU for Android is released</a>.</p></li>
 <li><p>12/18/2015 - <a href="https://github.com/CailinPitt/AwareOSUAndroid">Development of AwareOSU for Android begins</a>.</p></li>
