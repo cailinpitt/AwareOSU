@@ -22,25 +22,25 @@ AwareOSU also performs analytics. On the first day of every month, AwareOSU will
 * **Analytics** - This Ruby script runs on the first day of every month at 10:00 AM. It utilizes three great gems (Mail and Gchart) to analyze crime information from the previous month, inserts data into charts using Gchart, and sends the information out using Mail. Analytics also attaches two CSV files containing all the crime information AwareOSU analyzes for the entire month, in case users want to perform their own analysis.
 
 # Images
-#### Daily Email From AwareOSU
+### Daily Email From AwareOSU
 ![Daily Email from AwareOSU](https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/dailyOff.PNG)
 ![Daily Email from AwareOSU](https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/dailyOn.PNG)
 
 <hr>
 
-#### Weekly Email From AwareOSU
+### Weekly Email From AwareOSU
 ![Weekly Email from AwareOSU](https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/weeklyOff.PNG)
 ![Weekly Email from AwareOSU](https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/weeklyOn.PNG)
 
 <hr>
 
-#### Monthly AwareOSU Analytics Report
+### Monthly AwareOSU Analytics Report
 ![Crime Occurrences](https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/crimeOccurances.PNG)
 ![Crime Locations](https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/crimeLocations.PNG)
 ![Top 5 Busiest Days](https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/busiestDays.PNG)
 ![Monthly Trend](https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/trend.PNG)
 ---
-#### Off-campus crime information is pulled from parts of Zone 4 (Districts 30, 33, 34, 40, 41, 42, 43, 44, 50, and 53), visualized here
+### Off-campus crime information is pulled from parts of Zone 4 (Districts 30, 33, 34, 40, 41, 42, 43, 44, 50, and 53), visualized here
 ![Zone 4](https://raw.githubusercontent.com/CailinPitt/AwareOSU/master/images/zone4.PNG)
 
 # Why are some crimes listed multiple times?
