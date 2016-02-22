@@ -8,7 +8,7 @@
 OSU students (well, college students in general) enjoy being safe. Whenever a crime occurs on campus that has a continuing safety threat, OSU sends every student and staff an email briefly explaining the crime. However, OSU doesn't send crime alerts for all crimes that occur *on and around* campus (where many students live). The reality is that we live in a dangerous world, and we want to be aware of what is happening around us.
 
 # Features
-AwareOSU visits the [Columbus Police Department's unofficial web report portal](http://www.columbuspolice.org/reports/) (to find off-campus crimes committed in zone 4, more on zone 4 later) and the [OSU Police department's daily log system](http://www.ps.ohio-state.edu/police/daily_log/view.php?date=yesterday), finds information related to crimes committed the previous day, and sends crime information out to users.
+AwareOSU visits the [Columbus Police Department's unofficial web report portal](http://www.columbuspolice.org/reports/) (to find off-campus crimes committed in zone 4, more on zone 4 later) and the [OSU Police department's daily log system](http://www.ps.ohio-state.edu/police/daily_log/view.php?date=yesterday), finds information related to crimes committed the previous day, and sends information related to university area crimes out to users.
 
 For users who select the daily delivery option, AwareOSU will send an email each morning at 10:15 AM containing crime information from the previous day. For users who select the weekly delivery option, AwareOSU will send an email containing crime information from the previous week at 10:20 AM every Saturday morning.
 
@@ -17,7 +17,7 @@ AwareOSU also performs analytics. On the first day of every month, AwareOSU will
 # Great overview. What is the code actually doing?
 * **Main.rb** - This Ruby script runs daily at 10:15 AM. It utilizes three great gems (Mechanize, Nokogiri, and Mail) to visit the CPD web portal and OSU PD online log system (listed above) using Mechanize, parses the HTML of the search page containing all crimes committed yesterday using Nokogiri, and sends the information out in a HTML table using Mail.
 
-* **Weekly.rb** - This Ruby script runs every Saturday morning at 10:20 AM. It utilizes three great gems (Mechanize, Nokogiri, and Mail) to visit the CPD web portal and OSU PD online log system (listed above) using Mechanize, parses the HTML of the search page containing all crimes committed yesterday using Nokogiri, and sends the information out in a HTML table using Mail.
+* **Weekly.rb** - This Ruby script runs every morning at 10:20 AM. It utilizes three great gems (Mechanize, Nokogiri, and Mail) to visit the CPD web portal and OSU PD online log system (listed above) using Mechanize, parse the HTML of the search page containing all crimes committed yesterday using Nokogiri, and write this information to texts files everday. On every Saturday morning, This script will gather all crime information for the week and email the information out in a HTML table using Mail.
 
 * **Analytics.rb** - This Ruby script runs on the first day of every month at 10:00 AM. It utilizes three great gems (Mail and Gchart) to analyze crime information from the previous month, inserts data into charts using Gchart, and sends the information out using Mail. Analytics also attaches two CSV files containing all the crime information AwareOSU analyzes for the entire month, in case users want to perform their own analysis.
 
