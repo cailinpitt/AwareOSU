@@ -8,7 +8,7 @@
 OSU students (well, college students in general) enjoy being safe. Whenever a crime occurs on campus that has a continuing safety threat, OSU sends every student and staff an email briefly explaining the crime. However, OSU doesn't send crime alerts for all crimes that occur *on and around* campus (where many students live). The reality is that we live in a dangerous world, and we want to be aware of what is happening around us.
 
 # Features
-AwareOSU visits the [Columbus Police Department's unofficial web report portal](http://www.columbuspolice.org/reports/) (to find off-campus crimes committed in zone 4, more on zone 4 later) and the [OSU Police department's daily log system](http://www.ps.ohio-state.edu/police/daily_log/view.php?date=yesterday), finds information related to crimes committed the previous day, and sends information related to university area crimes out to users.
+AwareOSU visits the [Columbus Police Department's unofficial web report portal](http://www.columbuspolice.org/reports/) (to find off-campus crimes committed in zone 4, more on zone 4 later) and the [OSU Police department's daily log system](http://www.ps.ohio-state.edu/police/daily_log/view.php?date=yesterday), finds information related to crimes committed in the university area the previous day, and sends this information out to users.
 
 For users who select the daily delivery option, AwareOSU will send an email each morning at 10:15 AM containing crime information from the previous day. For users who select the weekly delivery option, AwareOSU will send an email containing crime information from the previous week at 10:20 AM every Saturday morning.
 
