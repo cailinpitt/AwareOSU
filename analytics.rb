@@ -330,30 +330,41 @@ def sendEmail(htmlString)
 	end
 	# Set up mail options, authenticate
 
+	emails = ["awareosulist@googlegroups.com", "awareosuweekly@googlegroups.com"]
 
-	mail = Mail.new({
-		:to => 'cailinpitt1@gmail.com',
-		:from => 'awareosu@gmail.com',
-		:subject => "AwareOSU - #{(Time.now - (3600 * 24)).strftime("%B")} Analytics"
-	});
-	# Initialize email
+	emails.each
+	{ |x|
+		mail = Mail.new({
+			:to => x,
+			:from => 'awareosu@gmail.com',
+			:subject => "AwareOSU - #{(Time.now - (3600 * 24)).strftime("%B")} Analytics"
+		});
+		# Initialize email
 	
-	mail.attachments['AwareOSULogo.png'] = File.read('/home/pi/Documents/AwareOSU/images/AwareOSULogo.png')
-	pic = mail.attachments['AwareOSULogo.png']
+		mail.attachments['AwareOSULogo.png'] = File.read('/home/pi/Documents/AwareOSU/images/AwareOSULogo.png')
+		pic = mail.attachments['AwareOSULogo.png']
 	
-	mail.add_file("OnCampus_#{(Time.now - (3600 * 24)).strftime("%B")}.csv")
-	mail.add_file("OffCampus_#{(Time.now - (3600 * 24)).strftime("%B")}.csv")
-	# Attach CSV files
+		mail.add_file("OnCampus_#{(Time.now - (3600 * 24)).strftime("%B")}.csv")
+		mail.add_file("OffCampus_#{(Time.now - (3600 * 24)).strftime("%B")}.csv")
+		# Attach CSV files
 	
-	html_part = Mail::Part.new do
-		 content_type 'text/html; charset=UTF-8'
-		 body "<center><img src='cid:#{pic.cid}'>" + htmlString + "</center><br><br><br><p>Best,</p><p>AwareOSU</p><br><p>P.S. <a href='http://cailinpitt.github.io/AwareOSU/definitions'>Confused about the meaning of a crime?</a></p><p>Please visit this <a href='http://goo.gl/forms/n3q6D53TT3'>link</a> to subscribe/unsubscribe.</p>"
-	end
-	# Insert email body into mail object
+		html_part = Mail::Part.new do
+			 content_type 'text/html; charset=UTF-8'
+			 body "<center><img src='cid:#{pic.cid}'>" + htmlString + "</center><br><br><br><p>Best,</p><p>AwareOSU</p><br><p>P.S. <a href='http://cailinpitt.github.io/AwareOSU/definitions'>Confused about the meaning of a crime?</a></p><p>Please visit this <a href='http://goo.gl/forms/n3q6D53TT3'>link</a> to subscribe/unsubscribe.</p>"
+		end
+		# Insert email body into mail object
 	
-	mail.html_part  = html_part
-	mail.deliver!
-	# Deliver email
+		mail.html_part  = html_part
+		mail.deliver!
+		# Deliver email
+		sleep 10
+	}
+
+	offCampus = File.open("/home/pi/Documents/AwareOSU/offcampusbatch.txt", "w")
+	offCampus.close
+	onCampus = File.open("/home/pi/Documents/AwareOSU/oncampusbatch.txt", "w")
+	onCampus.close
+	# Clear text files, we don't need last month's info anymore
 end
 
 main #Call main to start script
