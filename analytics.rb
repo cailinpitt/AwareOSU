@@ -332,10 +332,9 @@ def sendEmail(htmlString)
 
 	emails = ["awareosulist@googlegroups.com", "awareosuweekly@googlegroups.com"]
 
-	emails.each
-	{ |x|
+	for i in 0...emails.length
 		mail = Mail.new({
-			:to => x,
+			:to => emails[i],
 			:from => 'awareosu@gmail.com',
 			:subject => "AwareOSU - #{(Time.now - (3600 * 24)).strftime("%B")} Analytics"
 		});
@@ -358,13 +357,11 @@ def sendEmail(htmlString)
 		mail.deliver!
 		# Deliver email
 		sleep 10
-	}
-
+	end
 	offCampus = File.open("/home/pi/Documents/AwareOSU/offcampusbatch.txt", "w")
 	offCampus.close
 	onCampus = File.open("/home/pi/Documents/AwareOSU/oncampusbatch.txt", "w")
 	onCampus.close
 	# Clear text files, we don't need last month's info anymore
 end
-
 main #Call main to start script
