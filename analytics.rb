@@ -343,8 +343,8 @@ def sendEmail(htmlString)
 		mail.attachments['AwareOSULogo.png'] = File.read('/home/pi/Documents/AwareOSU/images/AwareOSULogo.png')
 		pic = mail.attachments['AwareOSULogo.png']
 	
-		mail.add_file("OnCampus_#{(Time.now - (3600 * 24)).strftime("%B")}.csv")
-		mail.add_file("OffCampus_#{(Time.now - (3600 * 24)).strftime("%B")}.csv")
+		mail.add_file("/home/pi/Documents/AwareOSU/OnCampus_#{(Time.now - (3600 * 24)).strftime("%B")}.csv")
+		mail.add_file("/home/pi/Documents/AwareOSU/OffCampus_#{(Time.now - (3600 * 24)).strftime("%B")}.csv")
 		# Attach CSV files
 	
 		html_part = Mail::Part.new do
