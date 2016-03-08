@@ -1,3 +1,4 @@
+#!/usr/bin/env ruby
 =begin
 	Created by Cailin Pitt on 10/15/2015
 	Edited by Will Sloan on 1/12/2016
