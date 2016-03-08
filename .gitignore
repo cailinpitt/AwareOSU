@@ -22,4 +22,9 @@
 
 #Ignore text files
 *.txt
+
+#Ignore CSV files
+*.csv
+
+#Ignore Gemfile
 Gemfile.lock
