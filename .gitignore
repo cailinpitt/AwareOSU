@@ -22,3 +22,4 @@
 
 #Ignore text files
 *.txt
+Gemfile.lock
