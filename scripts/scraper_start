@@ -1,4 +1,7 @@
 #!/bin/sh
+echo "Cleaning up old containers"
+docker rm $(docker ps -a| grep "aware-scraper" | awk '{print $1}')
+echo "\nBuilding new image..."
 docker build -q -t aware-scraper -f ../Dockerfile.scraper ../
-echo "Running container..."
+echo "\nRunning container..."
 docker run -it --link $(docker ps -q --filter="image=aware-database"):mongo aware-scraper
