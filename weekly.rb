@@ -13,7 +13,7 @@ require 'mail'
 # resolv-replace.rb is more for testing, supplies nice error statements in case this script runs into network issues
 require 'resolv-replace.rb'
 
-yesterday =(Time.now - (3600 * 24)).strftime("%m/%d/%Y")
+yesterday = (Time.now - (3600 * 24)).strftime("%m/%d/%Y")
 yesterdayWithDay = (Time.now - (3600 * 24)).strftime("%A, %m/%d/%Y")
 lastFriday = (Time.now - (7 * (3600 * 24))).strftime("%A, %m/%d/%Y")
 # Get dates
@@ -50,148 +50,195 @@ if !File.exist? "/home/pi/Documents/AwareOSU/oncampus.txt"
 	onCampus = File.open("/home/pi/Documents/AwareOSU/oncampus.txt", "w")
 	onCampus.close
 end
+
+if !File.exist? "/home/pi/Documents/AwareOSU/offcampusbatch.txt"
+	offBatch = File.open("/home/pi/Documents/AwareOSU/offcampusbatch.txt", "w")
+	offBatch.close
+	# To be used for analytics
+end
+
+if !File.exist? "/home/pi/Documents/AwareOSU/oncampusbatch.txt"
+	onBatch = File.open("/home/pi/Documents/AwareOSU/oncampusbatch.txt", "w")
+	onBatch.close
+	# To be used for analytics
+end
 # If files do not exist, we need to create them
 
 offCampus = File.open("/home/pi/Documents/AwareOSU/offcampus.txt", "a")
+offBatch = File.open("/home/pi/Documents/AwareOSU/offcampusbatch.txt", "a")
 # Open off campus text file
 
+websiteDown = false
 retries = 3
 # If website is down, we'll retry visiting it three times.
 
-begin
-	page = agent.get "http://www.columbuspolice.org/reports/SearchLocation?loc=zon4"
-	# Try to direct to Columbus PD report website
-rescue
-	if retries > 0
-		retries -= 1
-		sleep 5
-		retry
-	else
-		offCampus.puts yesterdayWithDay
-		offCampus.puts "-"
-		offCampus.puts "-"
-		offCampus.puts "-"
-		offCampus.puts "Columbus PD website was down, unable to retrieve crimes for #{yesterdayWithDay}."
-		# Report that there were no off-campus crimes for this date
-		# Else, write that website was down, move on to on-campus crimes
-	end
-	# If loading Columbus PD website fails, try one more time
-else
-	# Else it loaded, continue with execution of script
-	search_form = page.form_with :id => "ctl01"
-	search_form.field_with(:name => "ctl00$MainContent$startdate").value = yesterday
-	search_form.field_with(:name => "ctl00$MainContent$enddate").value = yesterday
-	# Tell website we want to search for all crimes in zone 4 that occurred yesterday
+districtArray = [ 'dis33', 'dis30', 'dis34', 'dis53', 'dis50', 'dis43', 'dis40', 'dis41', 'dis42', 'dis44' ]
+crimeNumTotal = 0
+# This array contains the districts we want to get crime info from
 
-	button = search_form.button_with(:type => "submit")
-	# Get submit button in order to submit search
-
-	search_results = agent.submit(search_form, button)
-	# Page containing the information we want to sift through.
-
-	# search_results contains off-campus crime information. Time to use Nokogiri!
-
-	resultPage = Nokogiri::HTML(search_results.body)
-	products = resultPage.css("span[class='ErrorLabel']")
-	# We use this span class to figure out if there are crimes for the specified date or not.
-
-	crimeHTML = ""
-	mapURL = ""
-	crimeTable = ""
-	crimeNum = 0
-	# Declare variables
-
-	if !products.text.to_s.eql? "Your search produced no records."
-		# Crimes have occured :(
-		# Parse HTML to get crimes, save in textfile.
-	
-		crimeTable = resultPage.css("table[class='mGrid']")
-		crimeInfo = crimeTable.css('td')
-		crimeReportNumbers = crimeTable.css('tr')
-		# Get crime information
-		crimeNum = crimeInfo.length
-	
-		crimeTableInfo = ""
-		# Set up variables to hold crime information
-	
-		i = 0
-		j = 0;
-		linkIndex = 1;
-		# Counters decared
-	
-		while ((i < crimeNum) && (i < 145)) do
-			report = '';
-			for j in 11...crimeReportNumbers[linkIndex]["onclick"].length - 1
-				char = '' + crimeReportNumbers[linkIndex]["onclick"][j]
-				report += char
-			end
-			# This loop takes care of setting up the links to each individual crime's page, where more information is listed.
-		
+for i in 0...districtArray.length
+	sleep 4
+	# Sleep so we aren't persistently bothering the CPD website
+	begin
+		websiteURL = "http://www.columbuspolice.org/reports/Results?from=datePlaceholder&to=datePlaceholder&loc=locationPlaceholder&types=9"
+		websiteURL.gsub!('datePlaceholder', yesterday).gsub!('locationPlaceholder', districtArray[i])
+		# Insert search info into URL
+		page = agent.get websiteURL
+		# Try to direct to Columbus PD report website
+	rescue
+		if retries > 0
+			retries -= 1
+			sleep 5
+			retry
+		else
+			websiteDown = true
 			offCampus.puts yesterdayWithDay
-			offCampus.puts crimeInfo[i].text
-			offCampus.puts crimeInfo[i + 1].text
-			offCampus.puts crimeInfo[i + 4].text
-			offCampus.puts 'http://www.columbuspolice.org/reports/PublicReport?caseID=' + report
-			# Dump off-campus information into textfile.
-		
-			i += 5
-			linkIndex += 1
-			# Insert information into table
+			offCampus.puts "-"
+			offCampus.puts "-"
+			offCampus.puts "-"
+			offCampus.puts "Columbus PD website was down, unable to retrieve crimes for #{yesterdayWithDay}."
+			# Report that there were no off-campus crimes for this date
+			# Else, write that website was down, move on to on-campus crimes
+			break
 		end
-		# Done getting off-campus info for the day
-	
-		# Crimes are retrieved from a table seperated by pages. Each page holds 29 crimes.
-		# JavaScript is used for pagination, and since Mechanize/Nokogiri cannot interact with JS (only HTML),
-		# the program can only retrieve the first 29 crimes (hence i < 145 [Each crime has 5 fields, 5 * 29 = 145])
-
-		# Until I figure out how to deal with pagination, we will only return the first 29 crimes.
-		# We rarely have more than 29 crimes, so this is a rare case, however it's something I still want to take care of.
-
+		# If loading Columbus PD website fails, try one more time
 	else
+		# Else it loaded, continue with execution of script
+
+		# page contains off-campus crime information. Time to use Nokogiri!
+
+		resultPage = Nokogiri::HTML(page.body)
+		products = resultPage.css("span[class='ErrorLabel']")
+		# We use this span class to figure out if there are crimes for the specified date or not.
+
+		crimeHTML = ""
+		mapURL = ""
+		crimeTable = ""
+		crimeNum = 0
+		# Declare variables
+
+		if !products.text.to_s.eql? "Your search produced no records."
+			crimeTable = resultPage.css("table[class='mGrid']")
+			crimeInfo = crimeTable.css('td')
+			crimeReportNumbers = crimeTable.css('tr')
+			# Get crime information
+			crimeNum = crimeInfo.length
+			crimeNumTotal += crimeNum / 5
+			crimeTableInfo = ""
+			# Set up variables to hold crime information
+	
+			k = 0
+			j = 0;
+			linkIndex = 1;
+			# Counters decared
+	
+			while ((k < crimeNum) && (k < 145)) do
+				report = '';
+				for j in 11...crimeReportNumbers[linkIndex]["onclick"].length - 1
+					char = '' + crimeReportNumbers[linkIndex]["onclick"][j]
+					report += char
+				end
+				# This loop takes care of setting up the links to each individual crime's page, where more information is listed.
+		
+				offCampus.puts yesterdayWithDay
+				offCampus.puts crimeInfo[k].text
+				offCampus.puts crimeInfo[k + 1].text
+				offCampus.puts crimeInfo[k + 4].text
+				offCampus.puts 'http://www.columbuspolice.org/reports/PublicReport?caseID=' + report
+				# Dump off-campus information into textfile.
+		
+				offBatch.puts yesterday
+				offBatch.puts crimeInfo[k + 1].text
+				offBatch.puts crimeInfo[k + 4].text
+				offBatch.puts districtArray[i]
+				# Save crime type and location for analytics
+
+				k += 5
+				linkIndex += 1
+				# Insert information into table
+			end
+			# Done getting off-campus info for the day
+	
+			# Crimes are retrieved from a table seperated by pages. Each page holds 29 crimes.
+			# JavaScript is used for pagination, and since Mechanize/Nokogiri cannot interact with JS (only HTML),
+			# the program can only retrieve the first 29 crimes (hence i < 145 [Each crime has 5 fields, 5 * 29 = 145])
+
+			# Until I figure out how to deal with pagination, we will only return the first 29 crimes for each district.
+			# We rarely have more than 29 crimes in a district, so this is a rare case, however it's something I still want to take care of.
+	end
+end
+end
+if ((crimeNumTotal == 0) && (websiteDown == false))
 		offCampus.puts yesterdayWithDay
 		offCampus.puts "-"
 		offCampus.puts "-"
 		offCampus.puts "-"
 		offCampus.puts "No off-campus crimes reported for #{yesterdayWithDay}"
 		# Report that there were no off-campus crimes for this date
-	end
 end
 offCampus.close
+offBatch.close
 # Close off-campus text file.
 
 onCampus = File.open("/home/pi/Documents/AwareOSU/oncampus.txt", "a")
+onBatch = File.open("/home/pi/Documents/AwareOSU/oncampusbatch.txt", "a")
 # Open file to dump on-campus information into
 
-page = agent.get "http://www.ps.ohio-state.edu/police/daily_log/view.php?date=yesterday"
-campusPage = Nokogiri::HTML(page.body)
-crimeTable = campusPage.css("table[width='680']")
-crimesFromTable = crimeTable.css("td[class='log']")
-numberOfOSUCrimes = crimesFromTable.length/8
-# Visit OSU PD's web log, get number of crimes committed on campus the previous day
+retries = 3
 
-if numberOfOSUCrimes > 0
-# There were on-campus crimes today, get information and save to textfile.
-
-i = 0
-	while i < crimesFromTable.length do
+begin
+	page = agent.get "http://dps-web-01.busfin.ohio-state.edu/police/daily_log_2/view.php?date=yesterday"
+	# Attempt to reach OSU PD
+rescue
+	if retries > 0
+		retries -= 1
+		sleep 5
+		retry
+	else
+		websiteDown = true
 		onCampus.puts yesterdayWithDay
-		onCampus.puts crimesFromTable[i].text
-		onCampus.puts crimesFromTable[i + 5].text
-		onCampus.puts crimesFromTable[i + 6].text
-		onCampus.puts crimesFromTable[i + 7].text
-		# Dump information into textfile
-		
-		i += 8
+		onCampus.puts "-"
+		onCampus.puts "-"
+		onCampus.puts "-"
+		onCampus.puts "OSU PD website was down, unable to retrieve crimes for #{yesterdayWithDay}."
+		# Report that website was down for this date
 	end
 else
-	onCampus.puts yesterdayWithDay
-	onCampus.puts "-"
-	onCampus.puts "-"
-	onCampus.puts "-"
-	onCampus.puts "No on-campus crimes reported for #{yesterdayWithDay}"
-	# Report that there were no on-campus crimes for this date
+	campusPage = Nokogiri::HTML(page.body)
+	crimeTable = campusPage.css("table[class='log']")
+	crimesFromTable = crimeTable.css("td[class='log']")
+	numberOfOSUCrimes = crimesFromTable.length/8
+	# Visit OSU PD's web log, get number of crimes committed on campus the previous day
+
+	if numberOfOSUCrimes > 0
+		# There were on-campus crimes today, get information and save to textfile.
+		i = 0
+		while i < crimesFromTable.length do
+			onCampus.puts yesterdayWithDay
+			onCampus.puts crimesFromTable[i].text
+			onCampus.puts crimesFromTable[i + 5].text
+			onCampus.puts crimesFromTable[i + 6].text
+			onCampus.puts crimesFromTable[i + 7].text
+			# Dump information into textfile
+	
+			onBatch.puts yesterday
+			onBatch.puts crimesFromTable[i + 5].text
+			onBatch.puts crimesFromTable[i + 6].text
+			# Save crime type and location for analytics
+
+			i += 8
+		end
+	else
+		onCampus.puts yesterdayWithDay
+		onCampus.puts "-"
+		onCampus.puts "-"
+		onCampus.puts "-"
+		onCampus.puts "No on-campus crimes reported for #{yesterdayWithDay}"
+		# Report that there were no on-campus crimes for this date
+	end
 end
 onCampus.close
+onBatch.close
 # Close onCampus connection
 
 # Now check if yesterday was Friday. We want to send users a digest of crimes from the previous week
@@ -201,11 +248,11 @@ if yesterdayWithDay.include? "Friday"
 	offCampusArray = IO.readlines('/home/pi/Documents/AwareOSU/offcampus.txt')
 	# Read off-campus crime information into Array
 
-	crimeTable = "<h1>#{offCampusArray.length/5} Off-campus crimes for the week of #{yesterdayWithDay}</h1>"
-	crimeTable += '<table style="width:80%;text-align: left;" cellpadding="10"><tbody><tr><th>Date</th><th>Report Number</th><th>Incident Type</th><th>Location</th><th>Description</th></tr>'
+	crimeTable = '<table style="width:80%;text-align: left;" cellpadding="10"><tbody><tr><th>Date</th><th>Report Number</th><th>Incident Type</th><th>Location</th><th>Description</th></tr>'
 		# Setup table for on-campus crime information
 	
 	i = 0
+	offCampusNum = offCampusArray.length / 5
 	while i < offCampusArray.length do
 		crimeTable += '<tr>'
 		crimeTable += '<td>' + offCampusArray[i] + '</td>'
@@ -220,17 +267,23 @@ if yesterdayWithDay.include? "Friday"
 		# Description
 		crimeTable += '</tr>'
 	
+		if offCampusArray[i + 3].include? "-"
+			offCampusNum -= 1
+			# Update size
+		end
 		i += 5
 	end
-	crimeTable += '</tbody></table><br><br>'
+	crimeTable += '</tbody></table><p><a href="http://cailinpitt.github.io/AwareOSU/definitions#off">Confused about the meaning of a crime?</a></p><br><br>'
 	#End table
+
+	crimeHTML = "<h1>#{offCampusNum} Off-campus crimes for the week of #{yesterdayWithDay}</h1>" + crimeTable
 
 	onCampusArray = IO.readlines('/home/pi/Documents/AwareOSU/oncampus.txt')
 	# Read on-campus crime information into Array
 
-	crimeTable += "<h1>#{onCampusArray.length/5} On-campus crimes for the week of #{yesterdayWithDay}</h1>"
-	crimeTable += '<table style="width:80%;text-align: left;" cellpadding="10"><tbody><tr><th>Date</th><th>Report Number</th><th>Incident Type</th><th>Location</th><th>Description</th></tr>'
+	crimeTable = '<table style="width:80%;text-align: left;" cellpadding="10"><tbody><tr><th>Date</th><th>Report Number</th><th>Incident Type</th><th>Location</th><th>Description</th></tr>'
 
+	onCampusNum = onCampusArray.length / 5
 	i = 0
 	while i < onCampusArray.length do
 		crimeTable += '<tr>'
@@ -246,27 +299,40 @@ if yesterdayWithDay.include? "Friday"
 		# Descriptions
 		crimeTable += '</tr>'
 	
+		if onCampusArray[i + 2].include? "-"
+			onCampusNum -= 1
+			# Update size
+		end
 		i += 5
 	end
 
-	crimeTable += '</tbody></table>'
+	crimeTable += '</tbody></table><p><a href="http://cailinpitt.github.io/AwareOSU/definitions#on">Confused about the meaning of a crime?</a></p>'
 	#End table
+
+	crimeHTML += "<h1>#{onCampusNum} On-campus crimes for the week of #{yesterdayWithDay}</h1>" + crimeTable
+	
+	mail = Mail.new({
+		:to => 'awareosuweekly@googlegroups.com',
+		:from => 'awareosu@gmail.com',
+		:subject => "AwareOSU - Digest for #{lastFriday} to #{yesterdayWithDay}"
+	});
+
+	mail.attachments['AwareOSULogo.png'] = File.read('/home/pi/Documents/AwareOSU/images/AwareOSULogo.png')
+	pic = mail.attachments['AwareOSULogo.png']
+
+	html_part = Mail::Part.new do
+		 content_type 'text/html; charset=UTF-8'
+		 body "<center><img src='cid:#{pic.cid}'></center>" + crimeHTML +  '<br><p>Best,</p><p>AwareOSU</p><br><br><p>P.S. Please visit this <a href="http://goo.gl/forms/n3q6D53TT3">link</a> to subscribe/unsubscribe.</p>'
+	end
+	# Insert email body into mail object
+
+	mail.html_part  = html_part
+	mail.deliver!
+	# Send digest to users
 
 	offCampus = File.open("/home/pi/Documents/AwareOSU/offcampus.txt", "w")
 	offCampus.close
 	onCampus = File.open("/home/pi/Documents/AwareOSU/oncampus.txt", "w")
 	onCampus.close
 	# Clear text files, we don't need last week's info anymore
-	
-	Mail.deliver do
-		to 'awareosulist@googlegroups.com'
-		from 'awareosu@gmail.com'
-		subject "AwareOSU - Digest for #{lastFriday} to #{yesterdayWithDay}"
-
-		html_part do
-			 content_type 'text/html; charset=UTF-8'
-			 body crimeTable+ '<br><p>Best,</p><p>AwareOSU</p><br><br><p>P.S. Please visit this <a href="http://goo.gl/forms/n3q6D53TT3">link</a> to subscribe/unsubscribe.</p>'
-		end
-	end
-	# Send digest to users
 end
