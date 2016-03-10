@@ -28,3 +28,6 @@
 
 #Ignore Gemlock
 Gemfile.lock
+
+#Ignore byebug log
+.byebug*

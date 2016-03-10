@@ -1,7 +1,0 @@
-#!/bin/sh
-echo "Cleaning up old containers..."
-docker rm $(docker ps -a| grep "aware-database" | awk '{print $1}')
-echo "\nBuilding new image..."
-docker build -q -t aware-database -f ../Dockerfile.db ../
-echo "\nStarting Database..."
-docker run -d --name aware_database -v /data/db aware-database
