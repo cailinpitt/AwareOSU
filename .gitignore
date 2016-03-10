@@ -25,3 +25,9 @@
 
 #Ignore CSV files
 *.csv
+
+#Ignore Gemlock
+Gemfile.lock
+
+#Ignore byebug log
+.byebug*

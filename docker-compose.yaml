@@ -1,0 +1,25 @@
+version: "2.0"
+
+services: 
+  scraper:
+    build:
+      context: .
+      dockerfile: Dockerfile.scraper
+    container_name: aware_scraper
+    depends_on:
+      - database
+    links:
+      - database:mongo
+    volumes:
+      - .:/usr/app
+
+  database:
+    build:
+      context: .
+      dockerfile: Dockerfile.db
+    container_name: aware_database
+    volumes:
+      - /data/db
+    tty: false
+
+
