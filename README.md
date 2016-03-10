@@ -21,7 +21,7 @@ AwareOSU also performs analytics. On the first day of every month, AwareOSU will
 
 * **Analytics.rb** - This Ruby script runs on the first day of every month at 10:00 AM. It utilizes three great gems (Mail and Gchart) to analyze crime information from the previous month, inserts data into charts using Gchart, and sends the information out using Mail. Analytics also attaches two CSV files containing all the crime information AwareOSU analyzes for the entire month, in case users want to perform their own analysis.
 
-* **getData.rb** - This script is used to supplement **Analytics.rb**. Basically, it gathers crime information from a specific period in time by asking the user what dates it wants to search between (ex. crime information from 01/01/2016 - 01/31/2016). 
+* **getData.rb** - This script is used to supplement **Analytics.rb**. Basically, it gathers crime information from a specific period in time by asking the user what dates it wants to search between (ex. crime information from 01/01/2016 - 01/31/2016).
 
 * **network-reset.sh** - My Pi sometimes runs into an issue where it has trouble staying connected to the Internet while using an ethernet connection, and will drop packets. This script resets the ethernet connection every morning one minute before an AwareOSU script is scheduled to run, ensuring that the Pi has a valid, working internet connection.
 
@@ -100,7 +100,7 @@ Visit the [AwareOSU Google form](http://goo.gl/forms/Oy5kZ4xHbX) to sign-up for 
 
 * 10/24/2015 - AwareOSU is now running from a Raspberry Pi! What does this mean? Basically, this means that AwareOSU is just about fully automated. The only thing I do now is add emails to the Google Group of people who have subscribed, and the Pi uses a CRON job to run Aware OSU every morning at 10:15.
 
-* 10/22/2015 - Program now searches and retrieves on-campus crimes, in addition to off-campus crimes. 
+* 10/22/2015 - Program now searches and retrieves on-campus crimes, in addition to off-campus crimes.
 
 * 10/17/2015 - AwareOSU has 100 users.
 
@@ -118,3 +118,18 @@ Visit the [AwareOSU Google form](http://goo.gl/forms/Oy5kZ4xHbX) to sign-up for 
 
 # Disclaimer
 [Crimes listed on CPD's web portal is not representative of all crimes that have occurred](http://www.columbuspolice.org/reports/About).
+
+# Contributing
+At this point, all core members have been chosen, but please submit a PR if you feel you have something to contribute!
+
+## Running the code
+We use [Docker](https://www.docker.com) to run the server-side scripts (only scrape.rb for now). You will need the [Docker Compose](https://docs.docker.com/compose/) service installed on your machine. The commands to run these services are as follows.
+
+To bring up all services (starts the scraper):  
+``` docker-compose up ```
+
+To run the scraper interactively (for debugging):  
+``` docker-compose run --service-ports scraper ```
+
+To only run the database:  
+``` docker-compose up database ```
