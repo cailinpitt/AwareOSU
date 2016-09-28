@@ -1,6 +1,6 @@
 =begin
 	Created by Cailin Pitt on 02/16/2015
-	
+
 	Ruby script that retrieves crime information between days specified by user, then saves information into textfile that can be used by analytics.rb.
 =end
 
@@ -13,19 +13,22 @@ require 'resolv-replace.rb'
 
 yesterday = (Time.now - (3600 * 24)).strftime("%m/%d/%Y")
 # Get dates
-	
+
 agent = Mechanize.new
 agent.open_timeout = 60
 agent.read_timeout = 60
 # Initialize new Mechanize agent
 # Pi takes a longer time to load web pages, had to increase timeouts in order to avoid socketerrors
 
-agent.user_agent_alias = "Mac Safari" 
+agent.user_agent_alias = "Mac Safari"
 # Chose Safari because I like Macs
 
-offCampus = File.open("offcampusbatch.txt", "w")
-onCampus = File.open("oncampusbatch.txt", "w")
+offCampus = File.open("offcampusbatch.csv", "a")
+onCampus = File.open("oncampusbatch.csv", "a")
 # If files do not exist, we need to create them
+
+offCampus.puts "Date,Description,Address,District,Link"
+onCampus.puts "Date,Incident Type,Location,Description"
 
 puts "Enter start date (mm/dd/yyyy):"
 startDate = gets.chomp
@@ -38,7 +41,6 @@ endDateBound = Date.strptime(endDate, "%m/%d/%Y")
 endDateBound += 1
 
 while startTimeObject.strftime("%m/%d/%Y") != endDateBound.strftime("%m/%d/%Y")
-	puts startTimeObject.strftime("%m/%d/%Y") + "- Retrieving Off Campus Data"
 	websiteDown = false
 	retries = 3
 	# If website is down, we'll retry visiting it three times.
@@ -46,7 +48,7 @@ while startTimeObject.strftime("%m/%d/%Y") != endDateBound.strftime("%m/%d/%Y")
 	districtArray = [ 'dis33', 'dis30', 'dis34', 'dis53', 'dis50', 'dis43', 'dis40', 'dis41', 'dis42', 'dis44' ]
 	crimeNumTotal = 0
 	# This array contains the districts we want to get crime info from
-	
+
 	for i in 0...districtArray.length
 		sleep 3
 		# Sleep so we aren't persistently bothering the CPD website
@@ -79,6 +81,7 @@ while startTimeObject.strftime("%m/%d/%Y") != endDateBound.strftime("%m/%d/%Y")
 			# Declare variables
 
 			if !products.text.to_s.eql? "Your search produced no records."
+
 				crimeTable = resultPage.css("table[class='mGrid']")
 				crimeInfo = crimeTable.css('td')
 				crimeReportNumbers = crimeTable.css('tr')
@@ -87,12 +90,12 @@ while startTimeObject.strftime("%m/%d/%Y") != endDateBound.strftime("%m/%d/%Y")
 				crimeNumTotal += crimeNum / 5
 				crimeTableInfo = ""
 				# Set up variables to hold crime information
-	
+
 				k = 0
 				j = 0;
 				linkIndex = 1;
 				# Counters decared
-	
+
 				while ((k < crimeNum) && (k < 145)) do
 					report = '';
 					for j in 11...crimeReportNumbers[linkIndex]["onclick"].length - 1
@@ -100,11 +103,8 @@ while startTimeObject.strftime("%m/%d/%Y") != endDateBound.strftime("%m/%d/%Y")
 						report += char
 					end
 					# This loop takes care of setting up the links to each individual crime's page, where more information is listed.
-	
-					offCampus.puts startTimeObject.strftime("%m/%d/%Y")
-					offCampus.puts crimeInfo[k + 1].text
-					offCampus.puts crimeInfo[k + 4].text
-					offCampus.puts districtArray[i]
+
+					offCampus.puts startTimeObject.strftime("%m/%d/%Y").to_s + "," + crimeInfo[k + 1].text.to_s + "," + crimeInfo[k + 4].text.to_s + "," + districtArray[i].to_s + ",http://www.columbuspolice.org/reports/PublicReport?caseID=" + report
 
 					k += 5
 					linkIndex += 1
@@ -139,7 +139,6 @@ while startTimeObject.strftime("%m/%d/%Y") != endDateBound.strftime("%m/%d/%Y")
 			retry
 		end
 	else
-		puts startTimeObject.strftime("%m/%d/%Y") + "- Retrieving On Campus Data"
 		campusPage = Nokogiri::HTML(page.body)
 		crimeTable = campusPage.css("table[class='log']")
 		crimesFromTable = crimeTable.css("td[class='log']")
@@ -147,12 +146,10 @@ while startTimeObject.strftime("%m/%d/%Y") != endDateBound.strftime("%m/%d/%Y")
 		# Visit OSU PD's web log, get number of crimes committed on campus the previous day
 
 		if numberOfOSUCrimes > 0
-			# There were on-campus crimes today, get information and save to textfile.
+			# There were on-campus crimes, get information and save to textfile.
 			i = 0
 			while i < crimesFromTable.length do
-				onCampus.puts startTimeObject.strftime("%m/%d/%Y")
-				onCampus.puts crimesFromTable[i + 5].text
-				onCampus.puts crimesFromTable[i + 6].text
+				onCampus.puts startTimeObject.strftime("%m/%d/%Y").to_s + "," + crimesFromTable[i + 5].text.to_s + "," + crimesFromTable[i + 6].text.to_s + "," + crimesFromTable[i + 7].text.to_s
 				# Save crime type and location for analytics
 
 				i += 8
